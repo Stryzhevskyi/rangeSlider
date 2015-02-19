@@ -1,0 +1,9 @@
+.editorconfig
+.gitattributes
+.gitignore
+.jshintrc
+
+bower.json
+gulpfile.js
+
+/example

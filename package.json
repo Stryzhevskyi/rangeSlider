@@ -1,0 +1,50 @@
+{
+  "name": "rangeslider-pure",
+  "title": "rangeSlider",
+  "description": "Simple, small and fast vanilla JavaScript polyfill for the HTML5 <input type=\"range\"> slider element",
+  "version": "0.1.2",
+  "main": "dist/rangeSlider.js",
+  "homepage": "https://github.com/Stryzhevskyi/rangeSlider",
+  "author":     {
+    "name": "Serhei Stryzhevskyi",
+    "url": "https://github.com/Stryzhevskyi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Stryzhevskyi/rangeSlider.git"
+  },
+  "keywords": [
+    "input",
+    "range",
+    "slider",
+    "rangeslider",
+    "rangeslider.js",
+    "polyfill",
+    "browser",
+    "pure",
+    "vanilla"
+  ],
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/Stryzhevskyi/rangeSlider/blob/master/LICENSE.md"
+  },
+  "bugs": {
+    "url": "https://github.com/Stryzhevskyi/rangeSlider/issues"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "del": "^1.1.1",
+    "gulp": "^3.8.10",
+    "gulp-jshint": "^1.9.2",
+    "gulp-minify-css": "^0.4.5",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.1.0",
+    "gulp-watch": "^3.0.0"
+  },
+  "scripts": {
+    "test": "gulp jshint"
+  }
+}
