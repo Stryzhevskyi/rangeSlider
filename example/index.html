@@ -144,6 +144,18 @@
 <br>
 <br>
 
+<div id="js-example-update-range">
+    <h2>Update range</h2>
+    <input type="range" min="10" max="100" step="10" data-buffer="60" data-rangeSlider>
+    <output></output>
+    <button>Update range {min : 0, max : 20, step : 0.5}</button>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+
 <div id="js-example-destroy">
     <h2>Destroy a plugin instance</h2>
     <input type="range" min="10" max="1000" step="10" value="500" data-rangeSlider>
@@ -250,6 +262,13 @@
             rangeSlider(inputRange, {});
         }, false);
 
+        //update range
+        var updateBtn1 = document.querySelector('#js-example-update-range button');
+        updateBtn1.addEventListener('click', function (e) {
+            var inputRange = updateBtn1.parentNode.querySelector('input[type="range"]');
+            inputRange.rangeSlider.updateRange({min : 0, max : 20, step : 0.5});
+        }, false);
+
 
         var toggleBtn = document.querySelector('#js-example-hidden button[data-behaviour="toggle"]');
         toggleBtn.addEventListener('click', function (e) {
@@ -270,18 +289,18 @@
             },
 
             // Callback function
-            onSlideStart: function (position, value) {
-                console.info('onSlideStart', 'position: ' + position, 'value: ' + value);
+            onSlideStart: function (value, percent,  position) {
+                console.info('onSlideStart', 'value: ' + value, 'percent: ' + percent, 'position: ' + position);
             },
 
             // Callback function
-            onSlide: function (position, value) {
-                console.log('onSlide', 'position: ' + position, 'value: ' + value);
+            onSlide: function (value, percent,  position) {
+                console.log('onSlide', 'value: ' + value, 'percent: ' + percent, 'position: ' + position);
             },
 
             // Callback function
-            onSlideEnd: function (position, value) {
-                console.warn('onSlideEnd', 'position: ' + position, 'value: ' + value);
+            onSlideEnd: function (value, percent,  position) {
+                console.warn('onSlideEnd', 'value: ' + value, 'percent: ' + percent, 'position: ' + position);
             }
         });
 

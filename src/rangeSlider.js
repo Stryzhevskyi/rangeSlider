@@ -390,7 +390,11 @@
             this.max = this.options.max || parseFloat(this.element.getAttribute('max') || (maxSetByDefault = 100));
             this.value = this.options.value || parseFloat(this.element.value || this.min + (this.max - this.min) / 2);
             this.step = this.options.step || parseFloat(this.element.getAttribute('step') || (stepSetByDefault = 1));
-            this.toFixed = (this.step + '').replace('.', '').length - 1;
+            this.percent = null;
+            this._updatePercentFromValue();
+
+            this.toFixed = this._toFixed(this.step);
+
 
             this.fill = document.createElement('div');
             this.fill.className = this.options.fillClass;
@@ -420,15 +424,15 @@
             }
 
             if (this.options.min || minSetByDefault) {
-                this.element.setAttribute('min', '' + this.options.min);
+                this.element.setAttribute('min', '' + this.min);
             }
 
             if (this.options.max || maxSetByDefault) {
-                this.element.setAttribute('max', '' + this.options.max);
+                this.element.setAttribute('max', '' + this.max);
             }
 
             if (this.options.step || stepSetByDefault) {
-                this.element.setAttribute('step', '' + this.options.step);
+                this.element.setAttribute('step', '' + this.step);
             }
 
             insertAfter(this.element, this.range);
@@ -463,12 +467,20 @@
 
         Plugin.prototype.constructor = Plugin;
 
+        Plugin.prototype._toFixed = function(step){
+            return (step + '').replace('.', '').length - 1;
+        };
+
 
         Plugin.prototype.init = function () {
             if (this.onInit && typeof this.onInit === 'function') {
                 this.onInit();
             }
             this.update();
+        };
+
+        Plugin.prototype._updatePercentFromValue = function(){
+            this.percent = (this.value - this.min) / (this.max - this.min);
         };
 
         /**
@@ -516,6 +528,26 @@
             if (this.options.bufferClass && this.options.buffer) {
                 this.setBufferPosition(this.options.buffer, true);
             }
+            this._updatePercentFromValue();
+        };
+
+        Plugin.prototype.updateRange = function(obj){
+            if (isFinite(obj.min) || isString(obj.min)) {
+                this.element.setAttribute('min', '' + obj.min);
+                this.min = obj.min;
+            }
+
+            if (isFinite(obj.max)|| isString(obj.max)) {
+                this.element.setAttribute('max', '' + obj.max);
+                this.max = obj.max;
+            }
+
+            if (isFinite(obj.step) || isString(obj.step)) {
+                this.element.setAttribute('step', '' + obj.step);
+                this.step = obj.step;
+                this.toFixed = this._toFixed(obj.step);
+            }
+            this.update();
         };
 
         Plugin.prototype.handleResize = function () {
@@ -547,6 +579,7 @@
             if (posX >= handleX && posX < handleX + this.handleWidth) {
                 this.grabX = posX - handleX;
             }
+            this._updatePercentFromValue();
         };
 
         Plugin.prototype.handleMove = function (e) {
@@ -564,7 +597,7 @@
             triggerEvent(this.element, 'change', {origin: this.identifier});
 
             if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
-                this.onSlideEnd(this.position, this.value);
+                this.onSlideEnd(this.value, this.percent, this.position);
             }
             this.onSlideEventsCount = 0;
         };
@@ -594,12 +627,14 @@
             // Update globals
             this.position = left;
             this.value = value;
+            this._updatePercentFromValue();
+
+            if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
+                this.onSlideStart(this.value, this.percent, this.position);
+            }
 
             if (this.onSlide && typeof this.onSlide === 'function') {
-                this.onSlide(left, value);
-            }
-            if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
-                this.onSlideStart(left, value);
+                this.onSlide(this.value, this.percent, this.position);
             }
 
             this.onSlideEventsCount++;

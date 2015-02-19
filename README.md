@@ -21,9 +21,9 @@ Install with [npm](https://www.npmjs.org/):
 ## Usage
 
 ```JavaScript
-// Initialize a new plugin instance for all elements.
-var sliders = document.querySelectorAll('input[type="range"]')
-rangeSlider.create(sliders, {
+// Initialize a new plugin instance for element or array of elements.
+var slider = document.querySelectorAll('input[type="range"]')
+rangeSlider.create(slider, {
     polyfill: true,     // Boolean, if true, custom markup will be created
     rangeClass: 'rangeSlider',
     disabledClass: 'rangeSlider--disabled',
@@ -43,7 +43,7 @@ rangeSlider.create(sliders, {
         console.info('onInit')
     },
     onSlideStart: function (position, value) {
-        console.info('onSlideStart', 'position: ' + position, 'value: ' + value)
+        console.info('onSlideStart', 'position: ' + position, 'value: ' + value);
     },
     onSlide: function (position, value) {
         console.log('onSlide', 'position: ' + position, 'value: ' + value);
@@ -52,6 +52,14 @@ rangeSlider.create(sliders, {
         console.warn('onSlideEnd', 'position: ' + position, 'value: ' + value);
     }
 });
+
+// then...
+slider.rangeSlider.updateRange({min : 0, max : 20, step : 0.5});
+// or
+slider.rangeSlider.onSlideStart: function (position, value) {
+                           console.error('anotherCallback', 'position: ' + position, 'value: ' + value);
+                       }
+
 ```
 
 ```HTML
