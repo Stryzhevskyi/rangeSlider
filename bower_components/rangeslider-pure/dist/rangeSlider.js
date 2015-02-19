@@ -645,13 +645,18 @@
             return i;
         };
 
+        /**
+         *
+         * @param {(MouseEvent|TouchEvent)}e
+         * @returns {number}
+         */
         Plugin.prototype.getRelativePosition = function (e) {
             // Get the offset left relative to the viewport
             var rangeX = this.range.getBoundingClientRect().left,
                 pageX = 0;
 
             if (typeof e.pageX !== 'undefined') {
-                pageX = e.pageX;
+                pageX = (e.touches && e.touches.length) ? e.touches[0].pageX : e.pageX;
             }
             else if (typeof e.originalEvent.clientX !== 'undefined') {
                 pageX = e.originalEvent.clientX;

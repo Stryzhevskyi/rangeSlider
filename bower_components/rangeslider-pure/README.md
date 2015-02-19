@@ -1,6 +1,7 @@
 # rangeSlider
 
 > Simple, small and fast vanilla JavaScript polyfill for the HTML5 `<input type="range">` slider element.
+> Forked from [André Ruffert's jQuery plugin](https://github.com/andreruffert/rangeslider.js)
 
 Check out the [examples](http://stryzhevskyi.github.io/rangeSlider/).
 
@@ -20,8 +21,7 @@ Install with [npm](https://www.npmjs.org/):
 ## Usage
 
 ```JavaScript
-// Initialize a new plugin instance for all
-// e.g. $('input[type="range"]') elements.
+// Initialize a new plugin instance for all elements.
 var sliders = document.querySelectorAll('input[type="range"]')
 rangeSlider.create(sliders, {
     polyfill: true,     // Boolean, if true, custom markup will be created
@@ -65,4 +65,4 @@ rangeSlider.create(sliders, {
 
 
 ## License
-MIT © [André Ruffert](http://andreruffert.com)
+MIT
