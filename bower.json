@@ -1,0 +1,7 @@
+{
+  "name": "rangeSliderExample",
+  "version": "0.0.0",
+  "dependencies": {
+    "rangeslider-pure" : "~0.1.*"
+  }
+}
