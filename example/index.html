@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="../dist/rangeSlider.css">
+    <!--<link rel="stylesheet" href="rangeSlider-flat.css">-->
     <style>
         *,
         *:before,
@@ -148,7 +149,7 @@
     <h2>Update range</h2>
     <input type="range" min="10" max="100" step="10" data-buffer="60" data-rangeSlider>
     <output></output>
-    <button>Update range {min : 0, max : 20, step : 0.5}</button>
+    <button>Update range {min : 0, max : 20, step : 0.5, value : 1.5, buffer : 70}</button>
 </div>
 
 <br>
@@ -246,27 +247,29 @@
             var inputRange = stBufferBtn.parentNode.querySelector('input[type="range"]'),
                 value = stBufferBtn.parentNode.querySelector('input[type="number"]').value;
 
-            inputRange.rangeSlider.setBufferPosition(value, true);
+            inputRange.rangeSlider.update({buffer : value});
         }, false);
 
         // Example functionality to demonstrate destroy functionality
         var destroyBtn = document.querySelector('#js-example-destroy button[data-behaviour="destroy"]');
         destroyBtn.addEventListener('click', function (e) {
             var inputRange = destroyBtn.parentNode.querySelector('input[type="range"]');
+            console.log(inputRange);
             inputRange.rangeSlider.destroy();
         }, false);
 
         var initBtn = document.querySelector('#js-example-destroy button[data-behaviour="initialize"]');
+
         initBtn.addEventListener('click', function (e) {
             var inputRange = initBtn.parentNode.querySelector('input[type="range"]');
-            rangeSlider(inputRange, {});
+            rangeSlider.create(inputRange, {});
         }, false);
 
         //update range
         var updateBtn1 = document.querySelector('#js-example-update-range button');
         updateBtn1.addEventListener('click', function (e) {
             var inputRange = updateBtn1.parentNode.querySelector('input[type="range"]');
-            inputRange.rangeSlider.updateRange({min : 0, max : 20, step : 0.5});
+            inputRange.rangeSlider.update({min : 0, max : 20, step : 0.5, value : 1.5, buffer : 70});
         }, false);
 
 
@@ -282,7 +285,6 @@
 
         // Basic rangeSlider initialization
         rangeSlider.create(elements, {
-
 
             // Callback function
             onInit: function () {

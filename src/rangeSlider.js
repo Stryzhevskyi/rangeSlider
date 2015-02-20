@@ -166,6 +166,25 @@
             return obj === '' + obj;
         }
 
+        function isNumberLike(obj) {
+            return (obj !== null && obj !== undefined && (isString(obj) && isFinite(parseFloat(obj)) || (isFinite(obj))));
+        }
+
+        function getFirsNumberLike() {
+            if (!arguments.length) {
+                return null;
+            }
+            for (var i = 0, len = arguments.length; i < len; i++) {
+                if (isNumberLike(arguments[i])) {
+                    return arguments[i];
+                }
+            }
+        }
+
+        function isObject(obj) {
+            return Object.prototype.toString.call(obj) === '[object Object]';
+        }
+
         function simpleExtend(defaultOpt, options) {
             var opt = {}, key;
             for (key in defaultOpt) {
@@ -340,6 +359,7 @@
                 return;
             }
             /* jshint ignore:start */
+            var instance = this;
 
             /**
              *
@@ -347,15 +367,17 @@
              * @this {Object} event name
              */
             function rm(listener) {
-                this.el.removeEventListener(this.eventName, listener, false);
+                if(listener === instance._startEventListener){
+                    this.el.removeEventListener(this.eventName, listener, false);
+                }
             }
 
             for (var eventName in el[EVENT_LISTENER_LIST]) {
                 el[EVENT_LISTENER_LIST][eventName].forEach(rm, {eventName: eventName, el: el});
             }
-            /* jshint ignore:end */
 
             el[EVENT_LISTENER_LIST] = {};
+            /* jshint ignore:end */
         }
 
 
@@ -386,10 +408,12 @@
             this.options.buffer = this.options.buffer || parseFloat(this.element.dataset.buffer);
 
             this.identifier = 'js-' + pluginName + '-' + (pluginIdentifier++);
-            this.min = this.options.min || parseFloat(this.element.getAttribute('min') || (minSetByDefault = 0));
-            this.max = this.options.max || parseFloat(this.element.getAttribute('max') || (maxSetByDefault = 100));
-            this.value = this.options.value || parseFloat(this.element.value || this.min + (this.max - this.min) / 2);
-            this.step = this.options.step || parseFloat(this.element.getAttribute('step') || (stepSetByDefault = 1));
+            this.min = getFirsNumberLike(this.options.min, parseFloat(this.element.getAttribute('min')), (minSetByDefault = 0));
+            this.max = getFirsNumberLike(this.options.max, parseFloat(this.element.getAttribute('max')), (maxSetByDefault = 100));
+            this.value = getFirsNumberLike(this.options.value, this.element.value,
+                parseFloat(this.element.value || this.min + (this.max - this.min) / 2));
+            this.step = getFirsNumberLike(this.options.step,
+                parseFloat(this.element.getAttribute('step')) || (stepSetByDefault = 1));
             this.percent = null;
             this._updatePercentFromValue();
 
@@ -415,23 +439,24 @@
                 this.range.appendChild(this.buffer);
             }
 
-            if (this.options.value) {
+            if (isNumberLike(this.options.value)) {
+                this._setValue(this.options.value, true);
                 this.element.value = this.options.value;
             }
 
-            if (this.options.buffer) {
+            if (isNumberLike(this.options.buffer)) {
                 this.element.dataset.buffer = this.options.buffer;
             }
 
-            if (this.options.min || minSetByDefault) {
+            if (isNumberLike(this.options.min) || minSetByDefault) {
                 this.element.setAttribute('min', '' + this.min);
             }
 
-            if (this.options.max || maxSetByDefault) {
+            if (isNumberLike(this.options.max) || maxSetByDefault) {
                 this.element.setAttribute('max', '' + this.max);
             }
 
-            if (this.options.step || stepSetByDefault) {
+            if (isNumberLike(this.options.step) || stepSetByDefault) {
                 this.element.setAttribute('step', '' + this.step);
             }
 
@@ -447,39 +472,39 @@
             });
 
             // Store context
-            this.handleDown = proxy(this.handleDown, this);
-            this.handleMove = proxy(this.handleMove, this);
-            this.handleEnd = proxy(this.handleEnd, this);
-            this.startEventListener = proxy(this.startEventListener, this);
-            this.changeEventListener = proxy(this.changeEventListener, this);
-            this.handleResize = proxy(this.handleResize, this);
+            this._handleDown = proxy(this._handleDown, this);
+            this._handleMove = proxy(this._handleMove, this);
+            this._handleEnd = proxy(this._handleEnd, this);
+            this._startEventListener = proxy(this._startEventListener, this);
+            this._changeEventListener = proxy(this._changeEventListener, this);
+            this._handleResize = proxy(this._handleResize, this);
 
-            this.init();
+            this._init();
 
             //// Attach Events
-            window.addEventListener('resize', this.handleResize, false);
+            window.addEventListener('resize', this._handleResize, false);
 
-            addEventListeners(document, this.options.startEvent, this.startEventListener);
+            addEventListeners(document, this.options.startEvent, this._startEventListener);
 
             // Listen to programmatic value changes
-            this.element.addEventListener('change', this.changeEventListener, false);
+            this.element.addEventListener('change', this._changeEventListener, false);
         }
 
         Plugin.prototype.constructor = Plugin;
 
-        Plugin.prototype._toFixed = function(step){
+        Plugin.prototype._toFixed = function (step) {
             return (step + '').replace('.', '').length - 1;
         };
 
 
-        Plugin.prototype.init = function () {
+        Plugin.prototype._init = function () {
             if (this.onInit && typeof this.onInit === 'function') {
                 this.onInit();
             }
-            this.update();
+            this._update();
         };
 
-        Plugin.prototype._updatePercentFromValue = function(){
+        Plugin.prototype._updatePercentFromValue = function () {
             this.percent = (this.value - this.min) / (this.max - this.min);
         };
 
@@ -488,7 +513,7 @@
          * @param ev
          * @param data
          */
-        Plugin.prototype.startEventListener = function (ev, data) {
+        Plugin.prototype._startEventListener = function (ev, data) {
             var _this = this;
             var el = ev.target;
             var isEventOnSlider = false;
@@ -496,26 +521,26 @@
                 return (isEventOnSlider = el.id === _this.identifier && !hasClass(el, _this.options.disabledClass));
             }, true);
             if (isEventOnSlider) {
-                this.handleDown(ev, data);
+                this._handleDown(ev, data);
             }
         };
 
-        Plugin.prototype.changeEventListener = function (ev, data) {
+        Plugin.prototype._changeEventListener = function (ev, data) {
             if (data && data.origin === this.identifier) {
                 return;
             }
 
             var value = ev.target.value,
-                pos = this.getPositionFromValue(value);
-            this.setPosition(pos);
+                pos = this._getPositionFromValue(value);
+            this._setPosition(pos);
         };
 
-        Plugin.prototype.update = function () {
+        Plugin.prototype._update = function () {
             this.handleWidth = getDimension(this.handle, 'offsetWidth');
             this.rangeWidth = getDimension(this.range, 'offsetWidth');
             this.maxHandleX = this.rangeWidth - this.handleWidth;
             this.grabX = this.handleWidth / 2;
-            this.position = this.getPositionFromValue(this.value);
+            this.position = this._getPositionFromValue(this.value);
 
             // Consider disabled state
             if (this.element.disabled) {
@@ -524,57 +549,40 @@
                 removeClass(this.range, this.options.disabledClass);
             }
 
-            this.setPosition(this.position);
+            this._setPosition(this.position);
             if (this.options.bufferClass && this.options.buffer) {
-                this.setBufferPosition(this.options.buffer, true);
+                this._setBufferPosition(this.options.buffer);
             }
             this._updatePercentFromValue();
+            this.element.dispatchEvent(new Event('change'));
         };
 
-        Plugin.prototype.updateRange = function(obj){
-            if (isFinite(obj.min) || isString(obj.min)) {
-                this.element.setAttribute('min', '' + obj.min);
-                this.min = obj.min;
-            }
 
-            if (isFinite(obj.max)|| isString(obj.max)) {
-                this.element.setAttribute('max', '' + obj.max);
-                this.max = obj.max;
-            }
-
-            if (isFinite(obj.step) || isString(obj.step)) {
-                this.element.setAttribute('step', '' + obj.step);
-                this.step = obj.step;
-                this.toFixed = this._toFixed(obj.step);
-            }
-            this.update();
-        };
-
-        Plugin.prototype.handleResize = function () {
+        Plugin.prototype._handleResize = function () {
             var _this = this;
             return debounce(function () {
                 // Simulate resizeEnd event.
                 delay(function () {
-                    _this.update();
+                    _this._update();
                 }, 300);
             }, 20)();
         };
 
-        Plugin.prototype.handleDown = function (e) {
+        Plugin.prototype._handleDown = function (e) {
             e.preventDefault();
-            addEventListeners(document, this.options.moveEvent, this.handleMove);
-            addEventListeners(document, this.options.endEvent, this.handleEnd);
+            addEventListeners(document, this.options.moveEvent, this._handleMove);
+            addEventListeners(document, this.options.endEvent, this._handleEnd);
 
             // If we click on the handle don't set the new position
             if ((' ' + e.target.className + ' ').replace(/[\n\t]/g, ' ').indexOf(this.options.handleClass) > -1) {
                 return;
             }
 
-            var posX = this.getRelativePosition(e),
+            var posX = this._getRelativePosition(e),
                 rangeX = this.range.getBoundingClientRect().left,
-                handleX = this.getPositionFromNode(this.handle) - rangeX;
+                handleX = this._getPositionFromNode(this.handle) - rangeX;
 
-            this.setPosition(posX - this.grabX);
+            this._setPosition(posX - this.grabX);
 
             if (posX >= handleX && posX < handleX + this.handleWidth) {
                 this.grabX = posX - handleX;
@@ -582,16 +590,16 @@
             this._updatePercentFromValue();
         };
 
-        Plugin.prototype.handleMove = function (e) {
+        Plugin.prototype._handleMove = function (e) {
             e.preventDefault();
-            var posX = this.getRelativePosition(e);
-            this.setPosition(posX - this.grabX);
+            var posX = this._getRelativePosition(e);
+            this._setPosition(posX - this.grabX);
         };
 
-        Plugin.prototype.handleEnd = function (e) {
+        Plugin.prototype._handleEnd = function (e) {
             e.preventDefault();
-            removeEventListeners(document, this.options.moveEvent, this.handleMove);
-            removeEventListeners(document, this.options.endEvent, this.handleEnd);
+            removeEventListeners(document, this.options.moveEvent, this._handleMove);
+            removeEventListeners(document, this.options.endEvent, this._handleEnd);
 
             // Ok we're done fire the change event
             triggerEvent(this.element, 'change', {origin: this.identifier});
@@ -602,7 +610,7 @@
             this.onSlideEventsCount = 0;
         };
 
-        Plugin.prototype.cap = function (pos, min, max) {
+        Plugin.prototype._cap = function (pos, min, max) {
             if (pos < min) {
                 return min;
             }
@@ -612,17 +620,17 @@
             return pos;
         };
 
-        Plugin.prototype.setPosition = function (pos) {
+        Plugin.prototype._setPosition = function (pos) {
             var value, left;
 
             // Snapping steps
-            value = this.getValueFromPosition(this.cap(pos, 0, this.maxHandleX));
-            left = this.getPositionFromValue(value);
+            value = this._getValueFromPosition(this._cap(pos, 0, this.maxHandleX));
+            left = this._getPositionFromValue(value);
 
             // Update ui
             this.fill.style.width = (left + this.grabX) + 'px';
             this.handle.style.left = left + 'px';
-            this.setValue(value);
+            this._setValue(value);
 
             // Update globals
             this.position = left;
@@ -640,17 +648,32 @@
             this.onSlideEventsCount++;
         };
 
-        Plugin.prototype.setBufferPosition = function (pos, isPercent) {
-            pos = parseFloat(pos);
+        Plugin.prototype._setBufferPosition = function (pos) {
+            var isPercent = true,
+                bufferWidth,
+                paddingWidth,
+                bufferWidthWithPadding;
+            if (isFinite(pos)) {
+                pos = parseFloat(pos);
+            } else if (isString(pos)) {
+                if (pos.indexOf('px') > 0) {
+                    isPercent = false;
+                }
+                pos = parseFloat(pos);
+            } else {
+                console.warn('New position must be XXpx or XX%');
+                return;
+            }
+
             if (isNaN(pos)) {
                 console.warn('New position is NaN');
-                return this;
+                return;
             }
             if (!this.options.bufferClass) {
                 console.warn('You disabled buffer, it\'s className is empty');
-                return this;
+                return;
             }
-            var bufferWidth = isPercent ? pos : (pos / this.rangeWidth * 100);
+            bufferWidth = isPercent ? pos : (pos / this.rangeWidth * 100);
             if (bufferWidth < 0) {
                 bufferWidth = 0;
             }
@@ -659,19 +682,19 @@
             }
             this.options.buffer = bufferWidth;
 
-            var paddingWidth = this.options.borderRadius / this.rangeWidth * 100;
-            var bufferWidhWithPadding = bufferWidth - paddingWidth;
-            if (bufferWidhWithPadding < 0) {
-                bufferWidhWithPadding = 0;
+            paddingWidth = this.options.borderRadius / this.rangeWidth * 100;
+            bufferWidthWithPadding = bufferWidth - paddingWidth;
+            if (bufferWidthWithPadding < 0) {
+                bufferWidthWithPadding = 0;
             }
 
-            this.buffer.style.width = bufferWidhWithPadding + '%';
+            this.buffer.style.width = bufferWidthWithPadding + '%';
             this.buffer.style.left = paddingWidth * 0.5 + '%';
-
+            this.element.dataset.buffer = bufferWidth;
         };
 
         // Returns element position relative to the parent
-        Plugin.prototype.getPositionFromNode = function (node) {
+        Plugin.prototype._getPositionFromNode = function (node) {
             var i = 0;
             while (node !== null) {
                 i += node.offsetLeft;
@@ -685,7 +708,7 @@
          * @param {(MouseEvent|TouchEvent)}e
          * @returns {number}
          */
-        Plugin.prototype.getRelativePosition = function (e) {
+        Plugin.prototype._getRelativePosition = function (e) {
             // Get the offset left relative to the viewport
             var rangeX = this.range.getBoundingClientRect().left,
                 pageX = 0;
@@ -706,34 +729,71 @@
             return pageX - rangeX;
         };
 
-        Plugin.prototype.getPositionFromValue = function (value) {
+        Plugin.prototype._getPositionFromValue = function (value) {
             var percentage, pos;
             percentage = (value - this.min) / (this.max - this.min);
             pos = percentage * this.maxHandleX;
             return pos;
         };
 
-        Plugin.prototype.getValueFromPosition = function (pos) {
+        Plugin.prototype._getValueFromPosition = function (pos) {
             var percentage, value;
             percentage = ((pos) / (this.maxHandleX || 1));
             value = this.step * Math.round(percentage * (this.max - this.min) / this.step) + this.min;
             return Number((value).toFixed(this.toFixed));
         };
 
-        Plugin.prototype.setValue = function (value) {
-            if (value === this.value) {
+        Plugin.prototype._setValue = function (value, force) {
+            if (value === this.value && !force) {
                 return;
             }
 
             // Set the new value and fire the `input` event
             this.element.value = value;
+            this.value = value;
             triggerEvent(this.element, 'input', {origin: this.identifier});
         };
 
+
+        /**
+         *
+         * @param {Object} obj like {min : Number, max : Number, value : Number, step : Number, buffer : [String|Number]}
+         * @returns {Plugin}
+         */
+        Plugin.prototype.update = function (obj) {
+            if (isObject(obj)) {
+                if (isNumberLike(obj.min)) {
+                    this.element.setAttribute('min', '' + obj.min);
+                    this.min = obj.min;
+                }
+
+                if (isNumberLike(obj.max)) {
+                    this.element.setAttribute('max', '' + obj.max);
+                    this.max = obj.max;
+                }
+
+                if (isNumberLike(obj.step)) {
+                    this.element.setAttribute('step', '' + obj.step);
+                    this.step = obj.step;
+                    this.toFixed = this._toFixed(obj.step);
+                }
+
+                if (isNumberLike(obj.buffer)) {
+                    this._setBufferPosition(obj.buffer);
+                }
+
+                if (isNumberLike(obj.value)) {
+                    this._setValue(obj.value);
+                }
+            }
+            this._update();
+            return this;
+        };
+
         Plugin.prototype.destroy = function () {
-            removeAllListenersFromEl(document);
-            window.removeEventListener('resize', this.handleResize, false);
-            this.element.removeEventListener('change', this.changeEventListener, false);
+            removeAllListenersFromEl.call(this, document);
+            window.removeEventListener('resize', this._handleResize, false);
+            this.element.removeEventListener('change', this._changeEventListener, false);
 
             this.element.style.cssText = '';
             delete this.element[pluginName];
