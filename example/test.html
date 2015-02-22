@@ -6,7 +6,7 @@
     <title>rangeSlider.js</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="../src/rangeSlider-flat.css">
+    <link rel="stylesheet" href="rangeSlider-flat.css">
     <style>
         *,
         *:before,
@@ -74,10 +74,11 @@
         // Basic rangeSlider initialization
         rangeSlider.create(elements, {
             min: 0,
-            max: 100,
+            max: 5,
             value : 0,
             borderRadius : 3,
             buffer : 0,
+            minEventInterval : 1000,
 
             // Callback function
             onInit: function () {

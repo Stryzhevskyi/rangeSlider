@@ -396,6 +396,8 @@
             this.onSlideStart = this.options.onSlideStart;
             this.onSlideEnd = this.options.onSlideEnd;
             this.onSlideEventsCount = -1;
+            this.isInteractsNow = false;
+            this.needTriggerEvents = false;
 
             // Plugin should only be used as a polyfill
             if (!this.polyfill) {
@@ -565,10 +567,11 @@
                 delay(function () {
                     _this._update();
                 }, 300);
-            }, 20)();
+            }, 100)();
         };
 
         Plugin.prototype._handleDown = function (e) {
+            this.isInteractsNow = true;
             e.preventDefault();
             addEventListeners(document, this.options.moveEvent, this._handleMove);
             addEventListeners(document, this.options.endEvent, this._handleEnd);
@@ -591,9 +594,11 @@
         };
 
         Plugin.prototype._handleMove = function (e) {
+            this.isInteractsNow = true;
             e.preventDefault();
             var posX = this._getRelativePosition(e);
             this._setPosition(posX - this.grabX);
+            //this.isInteractsNow = false;
         };
 
         Plugin.prototype._handleEnd = function (e) {
@@ -604,10 +609,13 @@
             // Ok we're done fire the change event
             triggerEvent(this.element, 'change', {origin: this.identifier});
 
-            if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
-                this.onSlideEnd(this.value, this.percent, this.position);
+            if(this.isInteractsNow || this.needTriggerEvents){
+                if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
+                    this.onSlideEnd(this.value, this.percent, this.position);
+                }
             }
             this.onSlideEventsCount = 0;
+            this.isInteractsNow = false;
         };
 
         Plugin.prototype._cap = function (pos, min, max) {
@@ -637,12 +645,14 @@
             this.value = value;
             this._updatePercentFromValue();
 
-            if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
-                this.onSlideStart(this.value, this.percent, this.position);
-            }
+            if(this.isInteractsNow || this.needTriggerEventss){
+                if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
+                    this.onSlideStart(this.value, this.percent, this.position);
+                }
 
-            if (this.onSlide && typeof this.onSlide === 'function') {
-                this.onSlide(this.value, this.percent, this.position);
+                if (this.onSlide && typeof this.onSlide === 'function') {
+                    this.onSlide(this.value, this.percent, this.position);
+                }
             }
 
             this.onSlideEventsCount++;
@@ -758,9 +768,13 @@
         /**
          *
          * @param {Object} obj like {min : Number, max : Number, value : Number, step : Number, buffer : [String|Number]}
+         * @param {Boolean} triggerEvents
          * @returns {Plugin}
          */
-        Plugin.prototype.update = function (obj) {
+        Plugin.prototype.update = function (obj, triggerEvents) {
+            if(triggerEvents){
+                this.needTriggerEvents = true;
+            }
             if (isObject(obj)) {
                 if (isNumberLike(obj.min)) {
                     this.element.setAttribute('min', '' + obj.min);
@@ -787,6 +801,8 @@
                 }
             }
             this._update();
+            this.onSlideEventsCount = 0;
+            this.needTriggerEvents = false;
             return this;
         };
 
