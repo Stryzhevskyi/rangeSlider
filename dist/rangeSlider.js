@@ -18,6 +18,10 @@
         'use strict';
 
         var EVENT_LISTENER_LIST = 'eventListenerList';
+        var newLineAndTabRegexp = new RegExp('/[\\n\\t]/', 'g');
+        var MAX_SET_BY_DEFAULT = 100;
+        var HANDLE_RESIZE_DELAY = 300;
+        var HANDLE_RESIZE_DEBOUNCE = 50;
 
         /**
          * Range feature detection
@@ -236,16 +240,6 @@
             }
         }
 
-        /**
-         *
-         * @callback fn
-         * @param {Object} ctx
-         */
-        function proxy(fn, ctx) {
-            return function () {
-                fn.apply(ctx, arguments);
-            };
-        }
 
         /**
          *
@@ -411,7 +405,7 @@
 
             this.identifier = 'js-' + pluginName + '-' + (pluginIdentifier++);
             this.min = getFirsNumberLike(this.options.min, parseFloat(this.element.getAttribute('min')), (minSetByDefault = 0));
-            this.max = getFirsNumberLike(this.options.max, parseFloat(this.element.getAttribute('max')), (maxSetByDefault = 100));
+            this.max = getFirsNumberLike(this.options.max, parseFloat(this.element.getAttribute('max')), (maxSetByDefault = MAX_SET_BY_DEFAULT));
             this.value = getFirsNumberLike(this.options.value, this.element.value,
                 parseFloat(this.element.value || this.min + (this.max - this.min) / 2));
             this.step = getFirsNumberLike(this.options.step,
@@ -474,12 +468,12 @@
             });
 
             // Store context
-            this._handleDown = proxy(this._handleDown, this);
-            this._handleMove = proxy(this._handleMove, this);
-            this._handleEnd = proxy(this._handleEnd, this);
-            this._startEventListener = proxy(this._startEventListener, this);
-            this._changeEventListener = proxy(this._changeEventListener, this);
-            this._handleResize = proxy(this._handleResize, this);
+            this._handleDown = this._handleDown.bind(this);
+            this._handleMove = this._handleMove.bind(this);
+            this._handleEnd = this._handleEnd.bind(this);
+            this._startEventListener = this._startEventListener.bind(this);
+            this._changeEventListener = this._changeEventListener.bind(this);
+            this._handleResize = this._handleResize.bind(this);
 
             this._init();
 
@@ -566,8 +560,8 @@
                 // Simulate resizeEnd event.
                 delay(function () {
                     _this._update();
-                }, 300);
-            }, 100)();
+                }, HANDLE_RESIZE_DELAY);
+            }, HANDLE_RESIZE_DEBOUNCE)();
         };
 
         Plugin.prototype._handleDown = function (e) {
@@ -577,7 +571,7 @@
             addEventListeners(document, this.options.endEvent, this._handleEnd);
 
             // If we click on the handle don't set the new position
-            if ((' ' + e.target.className + ' ').replace(/[\n\t]/g, ' ').indexOf(this.options.handleClass) > -1) {
+            if ((' ' + e.target.className + ' ').replace(newLineAndTabRegexp, ' ').indexOf(this.options.handleClass) > -1) {
                 return;
             }
 

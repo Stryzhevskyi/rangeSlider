@@ -8,7 +8,7 @@ Check out the [examples](http://stryzhevskyi.github.io/rangeSlider/).
 * Touchscreen friendly
 * Recalculates `onresize` so suitable for use within responsive designs
 * Small and fast
-* Supports all major browsers including IE8+
+* Supports all major browsers
 * Buffer progressbar (for downloading progress etc.)
 
 ## Install
