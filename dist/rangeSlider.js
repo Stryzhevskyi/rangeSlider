@@ -274,7 +274,8 @@
                 throw new TypeError('element must be HTMLElement');
             }
             name = name.trim();
-            var event = new CustomEvent(name, data);
+            var event = document.createEvent('CustomEvent');
+            event.initCustomEvent(name, false, false, data);
             el.dispatchEvent(event);
         }
 
