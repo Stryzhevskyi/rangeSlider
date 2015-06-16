@@ -401,7 +401,7 @@
                 }
             }
 
-            this.options.buffer = this.options.buffer || parseFloat(this.element.dataset.buffer);
+            this.options.buffer = this.options.buffer || parseFloat(this.element.getAttribute('data-buffer'));
 
             this.identifier = 'js-' + pluginName + '-' + (pluginIdentifier++);
             this.min = getFirsNumberLike(this.options.min, parseFloat(this.element.getAttribute('min')), (minSetByDefault = 0));
@@ -441,7 +441,7 @@
             }
 
             if (isNumberLike(this.options.buffer)) {
-                this.element.dataset.buffer = this.options.buffer;
+                this.element.setAttribute('data-buffer', this.options.buffer);
             }
 
             if (isNumberLike(this.options.min) || minSetByDefault) {
@@ -694,7 +694,7 @@
 
             this.buffer.style.width = bufferWidthWithPadding + '%';
             this.buffer.style.left = paddingWidth * 0.5 + '%';
-            this.element.dataset.buffer = bufferWidth;
+            this.element.setAttribute('data-buffer', bufferWidth);
         };
 
         // Returns element position relative to the parent

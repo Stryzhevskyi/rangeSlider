@@ -2,7 +2,7 @@
   "name": "rangeslider-pure",
   "title": "rangeSlider",
   "description": "Simple, small and fast vanilla JavaScript polyfill for the HTML5 <input type=\"range\"> slider element",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "main": "dist/rangeSlider.js",
   "homepage": "https://github.com/Stryzhevskyi/rangeSlider",
   "author":     {
