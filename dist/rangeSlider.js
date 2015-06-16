@@ -270,7 +270,7 @@
             if (!isString(name)) {
                 throw new TypeError('event name must be String');
             }
-            if (!el instanceof HTMLElement) {
+            if (!(el instanceof HTMLElement)) {
                 throw new TypeError('element must be HTMLElement');
             }
             name = name.trim();
@@ -361,7 +361,7 @@
              * @this {Object} event name
              */
             function rm(listener) {
-                if(listener === instance._startEventListener){
+                if (listener === instance._startEventListener) {
                     this.el.removeEventListener(this.eventName, listener, false);
                 }
             }
@@ -603,7 +603,7 @@
             // Ok we're done fire the change event
             triggerEvent(this.element, 'change', {origin: this.identifier});
 
-            if(this.isInteractsNow || this.needTriggerEvents){
+            if (this.isInteractsNow || this.needTriggerEvents) {
                 if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
                     this.onSlideEnd(this.value, this.percent, this.position);
                 }
@@ -639,7 +639,7 @@
             this.value = value;
             this._updatePercentFromValue();
 
-            if(this.isInteractsNow || this.needTriggerEventss){
+            if (this.isInteractsNow || this.needTriggerEventss) {
                 if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
                     this.onSlideStart(this.value, this.percent, this.position);
                 }
@@ -766,7 +766,7 @@
          * @returns {Plugin}
          */
         Plugin.prototype.update = function (obj, triggerEvents) {
-            if(triggerEvents){
+            if (triggerEvents) {
                 this.needTriggerEvents = true;
             }
             if (isObject(obj)) {
