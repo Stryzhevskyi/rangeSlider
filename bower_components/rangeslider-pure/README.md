@@ -8,7 +8,7 @@ Check out the [examples](http://stryzhevskyi.github.io/rangeSlider/).
 * Touchscreen friendly
 * Recalculates `onresize` so suitable for use within responsive designs
 * Small and fast
-* Supports all major browsers including IE8+
+* Supports all major browsers
 * Buffer progressbar (for downloading progress etc.)
 
 ## Install
@@ -54,7 +54,8 @@ rangeSlider.create(slider, {
 });
 
 // then...
-slider.rangeSlider.update({min : 0, max : 20, step : 0.5, value : 1.5, buffer : 70});
+var giveMeSomeEvents = true; // or false
+slider.rangeSlider.update({min : 0, max : 20, step : 0.5, value : 1.5, buffer : 70}, giveMeSomeEvents);
 // or
 slider.rangeSlider.onSlideStart: function (position, value) {
                            console.error('anotherCallback', 'position: ' + position, 'value: ' + value);

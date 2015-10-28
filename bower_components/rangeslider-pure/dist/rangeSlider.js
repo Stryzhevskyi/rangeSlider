@@ -18,6 +18,10 @@
         'use strict';
 
         var EVENT_LISTENER_LIST = 'eventListenerList';
+        var newLineAndTabRegexp = new RegExp('/[\\n\\t]/', 'g');
+        var MAX_SET_BY_DEFAULT = 100;
+        var HANDLE_RESIZE_DELAY = 300;
+        var HANDLE_RESIZE_DEBOUNCE = 50;
 
         /**
          * Range feature detection
@@ -236,16 +240,6 @@
             }
         }
 
-        /**
-         *
-         * @callback fn
-         * @param {Object} ctx
-         */
-        function proxy(fn, ctx) {
-            return function () {
-                fn.apply(ctx, arguments);
-            };
-        }
 
         /**
          *
@@ -276,11 +270,12 @@
             if (!isString(name)) {
                 throw new TypeError('event name must be String');
             }
-            if (!el instanceof HTMLElement) {
+            if (!(el instanceof HTMLElement)) {
                 throw new TypeError('element must be HTMLElement');
             }
             name = name.trim();
-            var event = new CustomEvent(name, data);
+            var event = document.createEvent('CustomEvent');
+            event.initCustomEvent(name, false, false, data);
             el.dispatchEvent(event);
         }
 
@@ -367,7 +362,7 @@
              * @this {Object} event name
              */
             function rm(listener) {
-                if(listener === instance._startEventListener){
+                if (listener === instance._startEventListener) {
                     this.el.removeEventListener(this.eventName, listener, false);
                 }
             }
@@ -396,6 +391,8 @@
             this.onSlideStart = this.options.onSlideStart;
             this.onSlideEnd = this.options.onSlideEnd;
             this.onSlideEventsCount = -1;
+            this.isInteractsNow = false;
+            this.needTriggerEvents = false;
 
             // Plugin should only be used as a polyfill
             if (!this.polyfill) {
@@ -405,11 +402,11 @@
                 }
             }
 
-            this.options.buffer = this.options.buffer || parseFloat(this.element.dataset.buffer);
+            this.options.buffer = this.options.buffer || parseFloat(this.element.getAttribute('data-buffer'));
 
             this.identifier = 'js-' + pluginName + '-' + (pluginIdentifier++);
             this.min = getFirsNumberLike(this.options.min, parseFloat(this.element.getAttribute('min')), (minSetByDefault = 0));
-            this.max = getFirsNumberLike(this.options.max, parseFloat(this.element.getAttribute('max')), (maxSetByDefault = 100));
+            this.max = getFirsNumberLike(this.options.max, parseFloat(this.element.getAttribute('max')), (maxSetByDefault = MAX_SET_BY_DEFAULT));
             this.value = getFirsNumberLike(this.options.value, this.element.value,
                 parseFloat(this.element.value || this.min + (this.max - this.min) / 2));
             this.step = getFirsNumberLike(this.options.step,
@@ -445,7 +442,7 @@
             }
 
             if (isNumberLike(this.options.buffer)) {
-                this.element.dataset.buffer = this.options.buffer;
+                this.element.setAttribute('data-buffer', this.options.buffer);
             }
 
             if (isNumberLike(this.options.min) || minSetByDefault) {
@@ -472,12 +469,12 @@
             });
 
             // Store context
-            this._handleDown = proxy(this._handleDown, this);
-            this._handleMove = proxy(this._handleMove, this);
-            this._handleEnd = proxy(this._handleEnd, this);
-            this._startEventListener = proxy(this._startEventListener, this);
-            this._changeEventListener = proxy(this._changeEventListener, this);
-            this._handleResize = proxy(this._handleResize, this);
+            this._handleDown = this._handleDown.bind(this);
+            this._handleMove = this._handleMove.bind(this);
+            this._handleEnd = this._handleEnd.bind(this);
+            this._startEventListener = this._startEventListener.bind(this);
+            this._changeEventListener = this._changeEventListener.bind(this);
+            this._handleResize = this._handleResize.bind(this);
 
             this._init();
 
@@ -564,17 +561,18 @@
                 // Simulate resizeEnd event.
                 delay(function () {
                     _this._update();
-                }, 300);
-            }, 20)();
+                }, HANDLE_RESIZE_DELAY);
+            }, HANDLE_RESIZE_DEBOUNCE)();
         };
 
         Plugin.prototype._handleDown = function (e) {
+            this.isInteractsNow = true;
             e.preventDefault();
             addEventListeners(document, this.options.moveEvent, this._handleMove);
             addEventListeners(document, this.options.endEvent, this._handleEnd);
 
             // If we click on the handle don't set the new position
-            if ((' ' + e.target.className + ' ').replace(/[\n\t]/g, ' ').indexOf(this.options.handleClass) > -1) {
+            if ((' ' + e.target.className + ' ').replace(newLineAndTabRegexp, ' ').indexOf(this.options.handleClass) > -1) {
                 return;
             }
 
@@ -591,9 +589,11 @@
         };
 
         Plugin.prototype._handleMove = function (e) {
+            this.isInteractsNow = true;
             e.preventDefault();
             var posX = this._getRelativePosition(e);
             this._setPosition(posX - this.grabX);
+            //this.isInteractsNow = false;
         };
 
         Plugin.prototype._handleEnd = function (e) {
@@ -604,10 +604,13 @@
             // Ok we're done fire the change event
             triggerEvent(this.element, 'change', {origin: this.identifier});
 
-            if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
-                this.onSlideEnd(this.value, this.percent, this.position);
+            if (this.isInteractsNow || this.needTriggerEvents) {
+                if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
+                    this.onSlideEnd(this.value, this.percent, this.position);
+                }
             }
             this.onSlideEventsCount = 0;
+            this.isInteractsNow = false;
         };
 
         Plugin.prototype._cap = function (pos, min, max) {
@@ -637,12 +640,14 @@
             this.value = value;
             this._updatePercentFromValue();
 
-            if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
-                this.onSlideStart(this.value, this.percent, this.position);
-            }
+            if (this.isInteractsNow || this.needTriggerEventss) {
+                if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
+                    this.onSlideStart(this.value, this.percent, this.position);
+                }
 
-            if (this.onSlide && typeof this.onSlide === 'function') {
-                this.onSlide(this.value, this.percent, this.position);
+                if (this.onSlide && typeof this.onSlide === 'function') {
+                    this.onSlide(this.value, this.percent, this.position);
+                }
             }
 
             this.onSlideEventsCount++;
@@ -690,7 +695,7 @@
 
             this.buffer.style.width = bufferWidthWithPadding + '%';
             this.buffer.style.left = paddingWidth * 0.5 + '%';
-            this.element.dataset.buffer = bufferWidth;
+            this.element.setAttribute('data-buffer', bufferWidth);
         };
 
         // Returns element position relative to the parent
@@ -716,11 +721,16 @@
             if (typeof e.pageX !== 'undefined') {
                 pageX = (e.touches && e.touches.length) ? e.touches[0].pageX : e.pageX;
             }
-            else if (typeof e.originalEvent.clientX !== 'undefined') {
-                pageX = e.originalEvent.clientX;
+            else if (typeof e.originalEvent !== 'undefined') {
+                if (typeof e.originalEvent.clientX !== 'undefined') {
+                    pageX = e.originalEvent.clientX;
+                }
+                else if (e.originalEvent.touches && e.originalEvent.touches[0] && typeof e.originalEvent.touches[0].clientX !== 'undefined') {
+                    pageX = e.originalEvent.touches[0].clientX;
+                }
             }
-            else if (e.originalEvent.touches && e.originalEvent.touches[0] && typeof e.originalEvent.touches[0].clientX !== 'undefined') {
-                pageX = e.originalEvent.touches[0].clientX;
+            else if (e.touches && e.touches[0] && typeof e.touches[0].clientX !== 'undefined') {
+                pageX = e.touches[0].clientX;
             }
             else if (e.currentPoint && typeof e.currentPoint.x !== 'undefined') {
                 pageX = e.currentPoint.x;
@@ -758,9 +768,13 @@
         /**
          *
          * @param {Object} obj like {min : Number, max : Number, value : Number, step : Number, buffer : [String|Number]}
+         * @param {Boolean} triggerEvents
          * @returns {Plugin}
          */
-        Plugin.prototype.update = function (obj) {
+        Plugin.prototype.update = function (obj, triggerEvents) {
+            if (triggerEvents) {
+                this.needTriggerEvents = true;
+            }
             if (isObject(obj)) {
                 if (isNumberLike(obj.min)) {
                     this.element.setAttribute('min', '' + obj.min);
@@ -787,6 +801,8 @@
                 }
             }
             this._update();
+            this.onSlideEventsCount = 0;
+            this.needTriggerEvents = false;
             return this;
         };
 
