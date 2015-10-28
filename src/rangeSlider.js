@@ -721,11 +721,16 @@
             if (typeof e.pageX !== 'undefined') {
                 pageX = (e.touches && e.touches.length) ? e.touches[0].pageX : e.pageX;
             }
-            else if (typeof e.originalEvent.clientX !== 'undefined') {
-                pageX = e.originalEvent.clientX;
+            else if (typeof e.originalEvent !== 'undefined') {
+                if (typeof e.originalEvent.clientX !== 'undefined') {
+                    pageX = e.originalEvent.clientX;
+                }
+                else if (e.originalEvent.touches && e.originalEvent.touches[0] && typeof e.originalEvent.touches[0].clientX !== 'undefined') {
+                    pageX = e.originalEvent.touches[0].clientX;
+                }
             }
-            else if (e.originalEvent.touches && e.originalEvent.touches[0] && typeof e.originalEvent.touches[0].clientX !== 'undefined') {
-                pageX = e.originalEvent.touches[0].clientX;
+            else if (e.touches && e.touches[0] && typeof e.touches[0].clientX !== 'undefined') {
+                pageX = e.touches[0].clientX;
             }
             else if (e.currentPoint && typeof e.currentPoint.x !== 'undefined') {
                 pageX = e.currentPoint.x;
