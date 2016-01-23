@@ -551,7 +551,7 @@
                 this._setBufferPosition(this.options.buffer);
             }
             this._updatePercentFromValue();
-            this.element.dispatchEvent(new Event('change'));
+            triggerEvent(this.element, 'change', {origin: this.identifier});
         };
 
 
