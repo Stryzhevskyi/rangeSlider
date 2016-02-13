@@ -5,9 +5,9 @@
         // AMD. Register as an anonymous module.
         define([], factory);
     }
-    else if (typeof exports === 'object') {
+    else if (typeof module === 'object' && module !== null && module.exports) {
         // CommonJS
-        factory();
+        module.exports = factory();
     } else {
         // Browser globals
         /* jshint ignore:start */
