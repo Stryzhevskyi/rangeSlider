@@ -22,7 +22,7 @@ Install with [npm](https://www.npmjs.org/):
 
 ```JavaScript
 // Initialize a new plugin instance for element or array of elements.
-var slider = document.querySelectorAll('input[type="range"]')
+var slider = document.querySelectorAll('input[type="range"]');
 rangeSlider.create(slider, {
     polyfill: true,     // Boolean, if true, custom markup will be created
     rangeClass: 'rangeSlider',
@@ -38,7 +38,7 @@ rangeSlider.create(slider, {
     step: null,         // Number, 1
     value: null,        // Number, center of slider
     buffer: null,       // Number, in percent, 0 by default
-    borderRadius: 10    // Number, if you use buffer + border-radius in css for looks good,
+    borderRadius: 10,    // Number, if you use buffer + border-radius in css for looks good,
     onInit: function () {
         console.info('onInit')
     },
