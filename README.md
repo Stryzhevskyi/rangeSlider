@@ -22,7 +22,7 @@ Install with [npm](https://www.npmjs.org/):
 
 ```JavaScript
 // Initialize a new plugin instance for element or array of elements.
-var slider = document.querySelectorAll('input[type="range"]')
+var slider = document.querySelectorAll('input[type="range"]');
 rangeSlider.create(slider, {
     polyfill: true,     // Boolean, if true, custom markup will be created
     rangeClass: 'rangeSlider',
