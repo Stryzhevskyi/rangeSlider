@@ -38,7 +38,7 @@ rangeSlider.create(slider, {
     step: null,         // Number, 1
     value: null,        // Number, center of slider
     buffer: null,       // Number, in percent, 0 by default
-    borderRadius: 10    // Number, if you use buffer + border-radius in css for looks good,
+    borderRadius: 10,    // Number, if you use buffer + border-radius in css for looks good,
     onInit: function () {
         console.info('onInit')
     },
