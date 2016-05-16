@@ -1,6 +1,6 @@
 {
-  "name": "rangeSliderExample",
-  "version": "0.3.6",
+  "name": "range-slider-example",
+  "version": "0.3.9",
   "dependencies": {
     "rangeslider-pure" : "~0.3.*"
   }
