@@ -38,6 +38,7 @@ rangeSlider.create(slider, {
     step: null,         // Number, 1
     value: null,        // Number, center of slider
     buffer: null,       // Number, in percent, 0 by default
+    stick: null,        // [Number stickTo, Number stickRadius] : use it if handle should stick to stickTo-th value in stickRadius
     borderRadius: 10,    // Number, if you use buffer + border-radius in css for looks good,
     onInit: function () {
         console.info('onInit')

@@ -51,6 +51,7 @@
                 step: null,
                 value: null,
                 buffer: null,
+                stick: null,
                 borderRadius: 10
             };
 
@@ -170,6 +171,10 @@
             return obj === '' + obj;
         }
 
+        function isArray(obj) {
+            return Object.prototype.toString.call(obj) === '[object Array]';
+        }
+
         function isNumberLike(obj) {
             return (obj !== null && obj !== undefined && (isString(obj) && isFinite(parseFloat(obj)) || (isFinite(obj))));
         }
@@ -212,6 +217,15 @@
                 el.style[key] = cssObj[key];
             }
             return el.style;
+        }
+
+        /**
+         *
+         * @param {HTMLElement} elem
+         * @param {string} className
+         */
+        function hasClass(elem, className) {
+            return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
         }
 
         /**
@@ -277,15 +291,6 @@
             var event = document.createEvent('CustomEvent');
             event.initCustomEvent(name, false, false, data);
             el.dispatchEvent(event);
-        }
-
-        /**
-         *
-         * @param {HTMLElement} elem
-         * @param {string} className
-         */
-        function hasClass(elem, className) {
-            return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
         }
 
         /**
@@ -382,7 +387,9 @@
          * @param {this} options
          */
         function Plugin(element, options) {
-            var minSetByDefault, maxSetByDefault, stepSetByDefault;
+            var minSetByDefault, maxSetByDefault, stepSetByDefault,
+                stickAttribute,
+                stickValues;
             this.element = element;
             this.options = simpleExtend(defaults, options);
             this.polyfill = this.options.polyfill;
@@ -412,6 +419,17 @@
             this.step = getFirsNumberLike(this.options.step,
                 parseFloat(this.element.getAttribute('step')) || (stepSetByDefault = 1));
             this.percent = null;
+            if (isArray(this.options.stick) && this.options.stick.length >= 1) {
+                this.stick = this.options.stick;
+            } else if ((stickAttribute = this.element.getAttribute('stick'))) {
+                stickValues = stickAttribute.split(' ');
+                if (stickValues.length >= 1) {
+                    this.stick = stickValues.map(parseFloat);
+                }
+            }
+            if (this.stick && this.stick.length === 1) {
+                this.stick.push(this.step * 1.5);
+            }
             this._updatePercentFromValue();
 
             this.toFixed = this._toFixed(this.step);
@@ -624,10 +642,24 @@
         };
 
         Plugin.prototype._setPosition = function (pos) {
-            var value, left;
+            var value, left,
+                stickTo, stickRadius,
+                restFromValue;
 
             // Snapping steps
             value = this._getValueFromPosition(this._cap(pos, 0, this.maxHandleX));
+
+            // Stick to stick[0] in radius stick[1]
+            if (this.stick) {
+                stickTo = this.stick[0];
+                stickRadius = this.stick[1] || 0.1;
+                restFromValue = value % stickTo;
+                if (restFromValue < stickRadius) {
+                    value = value - restFromValue;
+                } else if (Math.abs(stickTo - restFromValue) < stickRadius) {
+                    value = value - restFromValue + stickTo;
+                }
+            }
             left = this._getPositionFromValue(value);
 
             // Update ui
