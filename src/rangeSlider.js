@@ -672,7 +672,7 @@
             this.value = value;
             this._updatePercentFromValue();
 
-            if (this.isInteractsNow || this.needTriggerEventss) {
+            if (this.isInteractsNow || this.needTriggerEvents) {
                 if (this.onSlideStart && typeof this.onSlideStart === 'function' && this.onSlideEventsCount === 0) {
                     this.onSlideStart(this.value, this.percent, this.position);
                 }
