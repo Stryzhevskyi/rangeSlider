@@ -664,7 +664,7 @@
 
             // Update ui
             this.fill.style.width = (left + this.grabX) + 'px';
-            this.handle.style.left = left + 'px';
+            this.handle.style.transform = 'translateX(' + left + 'px)';
             this._setValue(value);
 
             // Update globals
