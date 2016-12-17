@@ -1,6 +1,6 @@
 {
   "name": "rangeslider-pure",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "homepage": "https://github.com/Stryzhevskyi/rangeSlider",
   "authors": [
     "André Ruffert <andre@andreruffert.com>",
@@ -36,13 +36,13 @@
     "gulpfile.js"
   ],
   "dependencies": {},
-  "_release": "0.3.10",
+  "_release": "0.3.11",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.10",
-    "commit": "a5a1e25820e02c7aa29df736fb2dc4ecab214bec"
+    "tag": "0.3.11",
+    "commit": "f8d318174afa6f96cd196b5f4d58bca75265badc"
   },
   "_source": "https://github.com/Stryzhevskyi/rangeSlider.git",
-  "_target": "~0.3.10",
+  "_target": "~0.3.*",
   "_originalSource": "rangeslider-pure"
 }
