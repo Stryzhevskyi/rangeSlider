@@ -101,8 +101,8 @@
          * @return {Boolean}
          */
         function isHidden(element) {
+            if (element === null) return;
             return !!(element.offsetWidth === 0 || element.offsetHeight === 0 || element.open === false);
-
         }
 
         /**
