@@ -61,6 +61,17 @@
 <br>
 
 <div>
+    <h2>Vertical mode</h2>
+    <div style="height: 200px;">
+        <input type="range" id="vertical">
+        <output></output>
+    </div>
+</div>
+
+<br>
+<br>
+
+<div>
     <h2>Floating point boundaries</h2>
 
     <div>
@@ -316,6 +327,10 @@
             onSlideEnd: function (value, percent, position) {
                 console.warn('onSlideEnd', 'value: ' + value, 'percent: ' + percent, 'position: ' + position);
             }
+        });
+
+        rangeSlider.create(document.querySelector('#vertical'), {
+            vertical: true
         });
 
     })();

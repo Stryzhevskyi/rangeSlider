@@ -33,6 +33,7 @@ rangeSlider.create(slider, {
     startEvent: ['mousedown', 'touchstart', 'pointerdown'],
     moveEvent: ['mousemove', 'touchmove', 'pointermove'],
     endEvent: ['mouseup', 'touchend', 'pointerup'],
+    vertical: false,    // Boolean, if true slider will be displayed in vertical orientation
     min: null,          // Number , 0
     max: null,          // Number, 100
     step: null,         // Number, 1

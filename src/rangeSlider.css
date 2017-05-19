@@ -1,9 +1,6 @@
 .rangeSlider,
 .rangeSlider__fill {
-    background: #7f8c8d;
     display: block;
-    height: 20px;
-    width: 100%;
     -webkit-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.3);
@@ -16,6 +13,17 @@
 
 .rangeSlider {
     position: relative;
+    background: #7f8c8d;
+}
+
+.rangeSlider__horizontal{
+    height: 20px;
+    width: 100%;
+}
+
+.rangeSlider__vertical{
+    height: 100%;
+    width: 20px;
 }
 
 .rangeSlider--disabled {
@@ -26,8 +34,19 @@
 .rangeSlider__fill {
     background: #16a085;
     position: absolute;
-    top: 0;
     z-index: 2;
+}
+
+.rangeSlider__fill__horizontal{
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.rangeSlider__fill__vertical{
+    width: 100%;
+    bottom: 0;
+    left: 0;
 }
 
 .rangeSlider__handle {
@@ -38,7 +57,6 @@
     width: 40px;
     height: 40px;
     position: absolute;
-    top: -10px;
     z-index: 3;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(0, 0, 0, 0.1)));
     background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.1));
@@ -53,6 +71,15 @@
     -ms-border-radius: 50%;
     -o-border-radius: 50%;
     border-radius: 50%;
+}
+
+.rangeSlider__handle__horizontal{
+    top: -10px;
+}
+
+.rangeSlider__handle__vertical{
+    left: -10px;
+    bottom: 0;
 }
 
 .rangeSlider__handle:after {
