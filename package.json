@@ -1,0 +1,23 @@
+{
+  "name": "rangeslider-pure",
+  "version": "0.4.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "rangeslider-pure": "^0.4.*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stryzhevskyi/rangeSlider.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Stryzhevskyi/rangeSlider/issues"
+  },
+  "homepage": "https://github.com/Stryzhevskyi/rangeSlider#readme"
+}
