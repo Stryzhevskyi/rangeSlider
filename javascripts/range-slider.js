@@ -382,7 +382,7 @@ var addEventListeners = exports.addEventListeners = function addEventListeners(e
       el[EVENT_LISTENER_LIST][eventName] = [];
     }
 
-    el.addEventListener(eventName, listener, false);
+    el.addEventListener(eventName, listener, window.PointerEvent ? { passive: false } : false);
     if (el[EVENT_LISTENER_LIST][eventName].indexOf(listener) < 0) {
       el[EVENT_LISTENER_LIST][eventName].push(listener);
     }
@@ -1012,8 +1012,6 @@ var RangeSlider = function () {
   }, {
     key: '_getRelativePosition',
     value: function _getRelativePosition(e) {
-      console.log(e);
-
       var boundingClientRect = this.range.getBoundingClientRect();
 
       // Get the offset relative to the viewport
@@ -1021,18 +1019,17 @@ var RangeSlider = function () {
       var pageX = 0;
 
       var pagePositionProperty = this.vertical ? 'pageY' : 'pageX';
-      var clientPositionProperty = this.vertical ? 'clientY' : 'clientX';
 
       if (typeof e[pagePositionProperty] !== 'undefined') {
         pageX = e.touches && e.touches.length ? e.touches[0][pagePositionProperty] : e[pagePositionProperty];
       } else if (typeof e.originalEvent !== 'undefined') {
-        if (typeof e.originalEvent[clientPositionProperty] !== 'undefined') {
-          pageX = e.originalEvent[clientPositionProperty];
-        } else if (e.originalEvent.touches && e.originalEvent.touches[0] && typeof e.originalEvent.touches[0][clientPositionProperty] !== 'undefined') {
-          pageX = e.originalEvent.touches[0][clientPositionProperty];
+        if (typeof e.originalEvent[pagePositionProperty] !== 'undefined') {
+          pageX = e.originalEvent[pagePositionProperty];
+        } else if (e.originalEvent.touches && e.originalEvent.touches[0] && typeof e.originalEvent.touches[0][pagePositionProperty] !== 'undefined') {
+          pageX = e.originalEvent.touches[0][pagePositionProperty];
         }
-      } else if (e.touches && e.touches[0] && typeof e.touches[0][clientPositionProperty] !== 'undefined') {
-        pageX = e.touches[0][clientPositionProperty];
+      } else if (e.touches && e.touches[0] && typeof e.touches[0][pagePositionProperty] !== 'undefined') {
+        pageX = e.touches[0][pagePositionProperty];
       } else if (e.currentPoint && (typeof e.currentPoint.x !== 'undefined' || typeof e.currentPoint.y !== 'undefined')) {
         pageX = this.vertical ? e.currentPoint.y : e.currentPoint.x;
       }
