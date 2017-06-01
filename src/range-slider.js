@@ -531,8 +531,6 @@ export default class RangeSlider {
    * @returns {number}
    */
   _getRelativePosition(e) {
-    console.log(e);
-
     const boundingClientRect = this.range.getBoundingClientRect();
 
     // Get the offset relative to the viewport
@@ -540,19 +538,18 @@ export default class RangeSlider {
     let pageX = 0;
 
     const pagePositionProperty = this.vertical ? 'pageY' : 'pageX';
-    const clientPositionProperty = this.vertical ? 'clientY' : 'clientX';
 
     if (typeof e[pagePositionProperty] !== 'undefined') {
       pageX = (e.touches && e.touches.length) ? e.touches[0][pagePositionProperty] : e[pagePositionProperty];
     } else if (typeof e.originalEvent !== 'undefined') {
-      if (typeof e.originalEvent[clientPositionProperty] !== 'undefined') {
-        pageX = e.originalEvent[clientPositionProperty];
+      if (typeof e.originalEvent[pagePositionProperty] !== 'undefined') {
+        pageX = e.originalEvent[pagePositionProperty];
       } else if (e.originalEvent.touches && e.originalEvent.touches[0] &&
-        typeof e.originalEvent.touches[0][clientPositionProperty] !== 'undefined') {
-        pageX = e.originalEvent.touches[0][clientPositionProperty];
+        typeof e.originalEvent.touches[0][pagePositionProperty] !== 'undefined') {
+        pageX = e.originalEvent.touches[0][pagePositionProperty];
       }
-    } else if (e.touches && e.touches[0] && typeof e.touches[0][clientPositionProperty] !== 'undefined') {
-      pageX = e.touches[0][clientPositionProperty];
+    } else if (e.touches && e.touches[0] && typeof e.touches[0][pagePositionProperty] !== 'undefined') {
+      pageX = e.touches[0][pagePositionProperty];
     } else if (e.currentPoint && (typeof e.currentPoint.x !== 'undefined' || typeof e.currentPoint.y !== 'undefined')) {
       pageX = this.vertical ? e.currentPoint.y : e.currentPoint.x;
     }

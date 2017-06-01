@@ -184,7 +184,7 @@ export const addEventListeners = (el, events, listener) => {
     el.addEventListener(
       eventName,
       listener,
-      false
+      window.PointerEvent ? {passive: false} : false
     );
     if (el[EVENT_LISTENER_LIST][eventName].indexOf(listener) < 0) {
       el[EVENT_LISTENER_LIST][eventName].push(listener);
