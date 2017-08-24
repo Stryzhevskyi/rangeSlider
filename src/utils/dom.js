@@ -2,6 +2,34 @@ import * as func from './functions';
 
 const EVENT_LISTENER_LIST = 'eventListenerList';
 
+export const detectIE = () => {
+  const ua = window.navigator.userAgent;
+  const msie = ua.indexOf('MSIE ');
+
+  if (msie > 0) {
+    return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+  }
+
+  const trident = ua.indexOf('Trident/');
+
+  if (trident > 0) {
+    const rv = ua.indexOf('rv:');
+
+    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+  }
+
+  const edge = ua.indexOf('Edge/');
+
+  if (edge > 0) {
+    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+  }
+
+  return false;
+};
+
+const ieVersion = detectIE();
+const eventCaptureParams = window.PointerEvent && !ieVersion ? {passive: false} : false;
+
 /**
  * Check if a `element` is visible in the DOM
  *
@@ -11,6 +39,7 @@ const EVENT_LISTENER_LIST = 'eventListenerList';
 export const isHidden = (element) => (
   element.offsetWidth === 0 || element.offsetHeight === 0 || element.open === false
 );
+
 /**
  * Get hidden parentNodes of an `element`
  *
@@ -42,11 +71,11 @@ export const getDimension = (element, key) => {
   let dimension = element[key];
 
   // Used for native `<details>` elements
-  function toggleOpenProperty(element) {
+  const toggleOpenProperty = (element) => {
     if (typeof element.open !== 'undefined') {
       element.open = !element.open;
     }
-  }
+  };
 
   if (hiddenParentNodesLength) {
     for (let i = 0; i < hiddenParentNodesLength; i++) {
@@ -173,7 +202,7 @@ export const insertAfter = (referenceNode, newNode) =>
  * @callback listener
  */
 export const addEventListeners = (el, events, listener) => {
-  events.forEach(function (eventName) {
+  events.forEach((eventName) => {
     if (!el[EVENT_LISTENER_LIST]) {
       el[EVENT_LISTENER_LIST] = {};
     }
@@ -184,7 +213,7 @@ export const addEventListeners = (el, events, listener) => {
     el.addEventListener(
       eventName,
       listener,
-      window.PointerEvent ? {passive: false} : false
+      eventCaptureParams
     );
     if (el[EVENT_LISTENER_LIST][eventName].indexOf(listener) < 0) {
       el[EVENT_LISTENER_LIST][eventName].push(listener);
@@ -199,7 +228,7 @@ export const addEventListeners = (el, events, listener) => {
  * @callback listener
  */
 export const removeEventListeners = (el, events, listener) => {
-  events.forEach(function (eventName) {
+  events.forEach((eventName) => {
     let index;
 
     el.removeEventListener(

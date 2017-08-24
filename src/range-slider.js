@@ -66,21 +66,27 @@ export default class RangeSlider {
     this.options.buffer = this.options.buffer || parseFloat(this.element.getAttribute('data-buffer'));
 
     this.identifier = 'js-' + pluginName + '-' + (pluginIdentifier++);
+
     this.min = func.getFirsNumberLike(
       this.options.min,
       parseFloat(this.element.getAttribute('min')),
       (minSetByDefault = 0)
     );
+
     this.max = func.getFirsNumberLike(
       this.options.max,
       parseFloat(this.element.getAttribute('max')),
       (maxSetByDefault = MAX_SET_BY_DEFAULT)
     );
+
     this.value = func.getFirsNumberLike(this.options.value, this.element.value,
       parseFloat(this.element.value || this.min + (this.max - this.min) / 2));
+
     this.step = func.getFirsNumberLike(this.options.step,
       parseFloat(this.element.getAttribute('step')) || (stepSetByDefault = 1));
+
     this.percent = null;
+
     if (func.isArray(this.options.stick) && this.options.stick.length >= 1) {
       this.stick = this.options.stick;
     } else if ((stickAttribute = this.element.getAttribute('stick'))) {
@@ -98,11 +104,11 @@ export default class RangeSlider {
 
     let directionClass;
 
-    this.fill = document.createElement('div');
-    dom.addClass(this.fill, this.options.fillClass);
+    this.container = document.createElement('div');
+    dom.addClass(this.container, this.options.fillClass);
 
     directionClass = this.vertical ? this.options.fillClass + '__vertical' : this.options.fillClass + '__horizontal';
-    dom.addClass(this.fill, directionClass);
+    dom.addClass(this.container, directionClass);
 
     this.handle = document.createElement('div');
     dom.addClass(this.handle, this.options.handleClass);
@@ -116,7 +122,7 @@ export default class RangeSlider {
     dom.addClass(this.range, this.options.rangeClass);
     this.range.id = this.identifier;
     this.range.appendChild(this.handle);
-    this.range.appendChild(this.fill);
+    this.range.appendChild(this.container);
 
     directionClass = this.vertical ? this.options.rangeClass + '__vertical' : this.options.rangeClass + '__horizontal';
     dom.addClass(this.range, directionClass);
@@ -155,7 +161,7 @@ export default class RangeSlider {
 
     dom.insertAfter(this.element, this.range);
 
-// visually hide the input
+    // visually hide the input
     dom.setCss(this.element, {
       'position': 'absolute',
       'width': '1px',
@@ -164,7 +170,7 @@ export default class RangeSlider {
       'opacity': '0'
     });
 
-// Store context
+    // Store context
     this._handleDown = this._handleDown.bind(this);
     this._handleMove = this._handleMove.bind(this);
     this._handleEnd = this._handleEnd.bind(this);
@@ -174,12 +180,12 @@ export default class RangeSlider {
 
     this._init();
 
-// Attach Events
+    // Attach Events
     window.addEventListener('resize', this._handleResize, false);
 
     dom.addEventListeners(document, this.options.startEvent, this._startEventListener);
 
-// Listen to programmatic value changes
+    // Listen to programmatic value changes
     this.element.addEventListener('change', this._changeEventListener, false);
   }
 
@@ -291,9 +297,13 @@ export default class RangeSlider {
     const el = ev.target;
     let isEventOnSlider = false;
 
-    dom.forEachAncestors(el, (el) =>
-        (isEventOnSlider = el.id === this.identifier && !dom.hasClass(el, this.options.disabledClass)),
-      true);
+    if (ev.which !== 1) {
+      return;
+    }
+
+    dom.forEachAncestors(el, el =>
+      (isEventOnSlider = el.id === this.identifier && !dom.hasClass(el, this.options.disabledClass)),
+    true);
 
     if (isEventOnSlider) {
       this._handleDown(ev, data);
@@ -346,7 +356,6 @@ export default class RangeSlider {
 
   _handleDown(e) {
     this.isInteractsNow = true;
-    e.preventDefault();
     dom.addEventListeners(document, this.options.moveEvent, this._handleMove);
     dom.addEventListeners(document, this.options.endEvent, this._handleEnd);
 
@@ -374,12 +383,10 @@ export default class RangeSlider {
     const posX = this._getRelativePosition(e);
 
     this.isInteractsNow = true;
-    e.preventDefault();
     this._setPosition(posX - this.grabX);
   }
 
   _handleEnd(e) {
-    e.preventDefault();
     dom.removeEventListeners(document, this.options.moveEvent, this._handleMove);
     dom.removeEventListeners(document, this.options.endEvent, this._handleEnd);
 
@@ -429,11 +436,11 @@ export default class RangeSlider {
 
     // Update ui
     if (this.vertical) {
-      this.fill.style.height = (position + this.grabX) + 'px';
+      this.container.style.height = (position + this.grabX) + 'px';
       this.handle.style.transform = 'translateY(-' + position + 'px)';
       this.handle.style['-ms-transform'] = 'translateY(-' + position + 'px)';
     } else {
-      this.fill.style.width = (position + this.grabX) + 'px';
+      this.container.style.width = (position + this.grabX) + 'px';
       this.handle.style.transform = 'translateX(' + position + 'px)';
       this.handle.style['-ms-transform'] = 'translateX(' + position + 'px)';
     }
@@ -534,31 +541,31 @@ export default class RangeSlider {
     const boundingClientRect = this.range.getBoundingClientRect();
 
     // Get the offset relative to the viewport
-    const rangeX = this.vertical ? boundingClientRect.bottom : boundingClientRect.left;
-    let pageX = 0;
+    const rangeSize = this.vertical ? boundingClientRect.bottom : boundingClientRect.left;
+    let pageOffset = 0;
 
     const pagePositionProperty = this.vertical ? 'pageY' : 'pageX';
 
     if (typeof e[pagePositionProperty] !== 'undefined') {
-      pageX = (e.touches && e.touches.length) ? e.touches[0][pagePositionProperty] : e[pagePositionProperty];
+      pageOffset = (e.touches && e.touches.length) ? e.touches[0][pagePositionProperty] : e[pagePositionProperty];
     } else if (typeof e.originalEvent !== 'undefined') {
       if (typeof e.originalEvent[pagePositionProperty] !== 'undefined') {
-        pageX = e.originalEvent[pagePositionProperty];
+        pageOffset = e.originalEvent[pagePositionProperty];
       } else if (e.originalEvent.touches && e.originalEvent.touches[0] &&
         typeof e.originalEvent.touches[0][pagePositionProperty] !== 'undefined') {
-        pageX = e.originalEvent.touches[0][pagePositionProperty];
+        pageOffset = e.originalEvent.touches[0][pagePositionProperty];
       }
     } else if (e.touches && e.touches[0] && typeof e.touches[0][pagePositionProperty] !== 'undefined') {
-      pageX = e.touches[0][pagePositionProperty];
+      pageOffset = e.touches[0][pagePositionProperty];
     } else if (e.currentPoint && (typeof e.currentPoint.x !== 'undefined' || typeof e.currentPoint.y !== 'undefined')) {
-      pageX = this.vertical ? e.currentPoint.y : e.currentPoint.x;
+      pageOffset = this.vertical ? e.currentPoint.y : e.currentPoint.x;
     }
 
     if (this.vertical) {
-      pageX -= window.pageYOffset;
+      pageOffset -= window.pageYOffset;
     }
 
-    return this.vertical ? rangeX - pageX : pageX - rangeX;
+    return this.vertical ? rangeSize - pageOffset : pageOffset - rangeSize;
   }
 
   _getPositionFromValue(value) {
