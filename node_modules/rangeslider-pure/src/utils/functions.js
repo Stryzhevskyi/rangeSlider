@@ -8,7 +8,7 @@
  * @return {Function}
  */
 export const delay = (fn, wait, ...args) => {
-  return setTimeout(function () {
+  return setTimeout(() => {
     return fn.apply(null, args);
   }, wait);
 };
@@ -30,7 +30,7 @@ export const debounce = (fn, debounceDuration) => {
       fn.debouncing = true;
     }
     clearTimeout(fn.debounceTimeout);
-    fn.debounceTimeout = setTimeout(function () {
+    fn.debounceTimeout = setTimeout(() => {
       fn.debouncing = false;
     }, debounceDuration);
     return fn.lastReturnVal;

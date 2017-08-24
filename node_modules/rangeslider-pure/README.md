@@ -20,7 +20,7 @@ Install with [npm](https://www.npmjs.org/):
 
 ## Usage
 
-```JavaScript
+```js
 // Initialize a new plugin instance for element or array of elements.
 var slider = document.querySelectorAll('input[type="range"]');
 rangeSlider.create(slider, {
@@ -65,7 +65,7 @@ slider.rangeSlider.onSlideStart: function (position, value) {
 
 ```
 
-```HTML
+```html
 <input
     type="range"
     min="0"
