@@ -3,24 +3,30 @@ const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 
-let libraryName = 'range-slider';
+const libraryName = 'range-slider';
 
-let plugins = [
+const plugins = [
   new ExtractTextPlugin('range-slider.css')
-], outputFile;
+];
+
+let outputFile;
 
 if (process.env.NODE_ENV === 'build') {
-  plugins.push(new UglifyJsPlugin({minimize: true}));
+  plugins.push(new UglifyJsPlugin({
+    minimize: true,
+    sourceMap: true
+  }));
+
   outputFile = libraryName + '.min.js';
 } else {
   outputFile = libraryName + '.js';
 }
 
 const config = {
-  entry: __dirname + '/src/range-slider.js',
+  entry: path.join(__dirname, '/src/range-slider.js'),
   devtool: 'source-map',
   output: {
-    path: __dirname + '/dist',
+    path: path.join(__dirname, '/dist'),
     filename: outputFile,
     library: 'rangeSlider',
     libraryTarget: 'umd',

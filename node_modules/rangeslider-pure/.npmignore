@@ -2,9 +2,7 @@
 .gitattributes
 .gitignore
 .jshintrc
+.eslintrc.json
 .idea/
-
 bower.json
-gulpfile.js
-
 example/

@@ -161,7 +161,7 @@ export default class RangeSlider {
 
     dom.insertAfter(this.element, this.range);
 
-    // visually hide the input
+    // hide the input visually
     dom.setCss(this.element, {
       'position': 'absolute',
       'width': '1px',
@@ -192,7 +192,6 @@ export default class RangeSlider {
   /* public methods */
 
   /**
-   *
    * @param {Object} obj like {min : Number, max : Number, value : Number, step : Number, buffer : [String|Number]}
    * @param {Boolean} triggerEvents
    * @returns {RangeSlider}
@@ -271,7 +270,7 @@ export default class RangeSlider {
     }
   }
 
-  /* priate methods */
+  /* private methods */
 
   _toFixed(step) {
     return (step + '').replace('.', '').length - 1;
@@ -297,7 +296,7 @@ export default class RangeSlider {
     const el = ev.target;
     let isEventOnSlider = false;
 
-    if (ev.which !== 1) {
+    if (ev.which !== 1 && !('touches' in ev)) {
       return;
     }
 
@@ -356,6 +355,7 @@ export default class RangeSlider {
 
   _handleDown(e) {
     this.isInteractsNow = true;
+    e.preventDefault();
     dom.addEventListeners(document, this.options.moveEvent, this._handleMove);
     dom.addEventListeners(document, this.options.endEvent, this._handleEnd);
 
@@ -373,7 +373,7 @@ export default class RangeSlider {
 
     this._setPosition(position);
 
-    if (posX >= handleX && posX < handleX + this.handleWidth) {
+    if (posX >= handleX && posX < handleX + this.options.borderRadius * 2) {
       this.grabX = posX - handleX;
     }
     this._updatePercentFromValue();
@@ -383,10 +383,12 @@ export default class RangeSlider {
     const posX = this._getRelativePosition(e);
 
     this.isInteractsNow = true;
+    e.preventDefault();
     this._setPosition(posX - this.grabX);
   }
 
   _handleEnd(e) {
+    e.preventDefault();
     dom.removeEventListeners(document, this.options.moveEvent, this._handleMove);
     dom.removeEventListeners(document, this.options.endEvent, this._handleEnd);
 
@@ -402,16 +404,6 @@ export default class RangeSlider {
     this.isInteractsNow = false;
   }
 
-  _cap(pos, min, max) {
-    if (pos < min) {
-      return min;
-    }
-    if (pos > max) {
-      return max;
-    }
-    return pos;
-  }
-
   _setPosition(pos) {
     let position;
     let stickRadius;
@@ -419,7 +411,7 @@ export default class RangeSlider {
     let stickTo;
 
     // Snapping steps
-    let value = this._getValueFromPosition(this._cap(pos, 0, this.maxHandleX));
+    let value = this._getValueFromPosition(func.between(pos, 0, this.maxHandleX));
 
     // Stick to stick[0] in radius stick[1]
     if (this.stick) {
