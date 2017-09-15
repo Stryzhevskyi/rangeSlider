@@ -111,8 +111,8 @@ var delay = exports.delay = function delay(fn, wait) {
  *         function. (defaults to 100ms)
  * @return {Function}
  */
-var debounce = exports.debounce = function debounce(fn, debounceDuration) {
-  debounceDuration = debounceDuration || 100;
+var debounce = exports.debounce = function debounce(fn) {
+  var debounceDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
   return function () {
     for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
       args[_key2] = arguments[_key2];
@@ -175,6 +175,16 @@ var simpleExtend = exports.simpleExtend = function simpleExtend(defaultOpt, opti
   }
 
   return opt;
+};
+
+var between = exports.between = function between(pos, min, max) {
+  if (pos < min) {
+    return min;
+  }
+  if (pos > max) {
+    return max;
+  }
+  return pos;
 };
 
 /***/ }),
@@ -352,7 +362,7 @@ var RangeSlider = function () {
 
     dom.insertAfter(this.element, this.range);
 
-    // visually hide the input
+    // hide the input visually
     dom.setCss(this.element, {
       'position': 'absolute',
       'width': '1px',
@@ -383,7 +393,6 @@ var RangeSlider = function () {
   /* public methods */
 
   /**
-   *
    * @param {Object} obj like {min : Number, max : Number, value : Number, step : Number, buffer : [String|Number]}
    * @param {Boolean} triggerEvents
    * @returns {RangeSlider}
@@ -452,7 +461,7 @@ var RangeSlider = function () {
     key: '_toFixed',
 
 
-    /* priate methods */
+    /* private methods */
 
     value: function _toFixed(step) {
       return (step + '').replace('.', '').length - 1;
@@ -485,7 +494,7 @@ var RangeSlider = function () {
       var el = ev.target;
       var isEventOnSlider = false;
 
-      if (ev.which !== 1) {
+      if (ev.which !== 1 && !('touches' in ev)) {
         return;
       }
 
@@ -550,6 +559,7 @@ var RangeSlider = function () {
     key: '_handleDown',
     value: function _handleDown(e) {
       this.isInteractsNow = true;
+      e.preventDefault();
       dom.addEventListeners(document, this.options.moveEvent, this._handleMove);
       dom.addEventListeners(document, this.options.endEvent, this._handleEnd);
 
@@ -567,7 +577,7 @@ var RangeSlider = function () {
 
       this._setPosition(position);
 
-      if (posX >= handleX && posX < handleX + this.handleWidth) {
+      if (posX >= handleX && posX < handleX + this.options.borderRadius * 2) {
         this.grabX = posX - handleX;
       }
       this._updatePercentFromValue();
@@ -578,11 +588,13 @@ var RangeSlider = function () {
       var posX = this._getRelativePosition(e);
 
       this.isInteractsNow = true;
+      e.preventDefault();
       this._setPosition(posX - this.grabX);
     }
   }, {
     key: '_handleEnd',
     value: function _handleEnd(e) {
+      e.preventDefault();
       dom.removeEventListeners(document, this.options.moveEvent, this._handleMove);
       dom.removeEventListeners(document, this.options.endEvent, this._handleEnd);
 
@@ -598,17 +610,6 @@ var RangeSlider = function () {
       this.isInteractsNow = false;
     }
   }, {
-    key: '_cap',
-    value: function _cap(pos, min, max) {
-      if (pos < min) {
-        return min;
-      }
-      if (pos > max) {
-        return max;
-      }
-      return pos;
-    }
-  }, {
     key: '_setPosition',
     value: function _setPosition(pos) {
       var position = void 0;
@@ -617,7 +618,7 @@ var RangeSlider = function () {
       var stickTo = void 0;
 
       // Snapping steps
-      var value = this._getValueFromPosition(this._cap(pos, 0, this.maxHandleX));
+      var value = this._getValueFromPosition(func.between(pos, 0, this.maxHandleX));
 
       // Stick to stick[0] in radius stick[1]
       if (this.stick) {
@@ -889,8 +890,8 @@ var isHidden = exports.isHidden = function isHidden(element) {
 /**
  * Get hidden parentNodes of an `element`
  *
- * @param  {Element} element
- * @return {[type]}
+ * @param {Element} element
+ * @return {Element[]}
  */
 var getHiddenParentNodes = exports.getHiddenParentNodes = function getHiddenParentNodes(element) {
   var parents = [];
@@ -1000,7 +1001,7 @@ var removeClass = exports.removeClass = function removeClass(elem, className) {
 /**
  *
  * @param {HTMLElement} el
- * @callback callback
+ * @param {Function} callback
  * @param {boolean} andForElement - apply callback for el
  * @returns {HTMLElement}
  */
@@ -1046,9 +1047,9 @@ var insertAfter = exports.insertAfter = function insertAfter(referenceNode, newN
 
 /**
  * Add event listeners and push them to el[EVENT_LISTENER_LIST]
- * @param {HTMLElement} el DOM element
+ * @param {HTMLElement|Node|Document} el DOM element
  * @param {Array} events
- * @callback listener
+ * @param {Function} listener
  */
 var addEventListeners = exports.addEventListeners = function addEventListeners(el, events, listener) {
   events.forEach(function (eventName) {
@@ -1070,7 +1071,7 @@ var addEventListeners = exports.addEventListeners = function addEventListeners(e
  * Remove event listeners and remove them from el[EVENT_LISTENER_LIST]
  * @param {HTMLElement} el DOM element
  * @param {Array} events
- * @callback listener
+ * @param {Function} listener
  */
 var removeEventListeners = exports.removeEventListeners = function removeEventListeners(el, events, listener) {
   events.forEach(function (eventName) {
@@ -1086,12 +1087,14 @@ var removeEventListeners = exports.removeEventListeners = function removeEventLi
 
 /**
  * Remove ALL event listeners which exists in el[EVENT_LISTENER_LIST]
+ * @param instance
  * @param {HTMLElement} el DOM element
  */
 var removeAllListenersFromEl = exports.removeAllListenersFromEl = function removeAllListenersFromEl(instance, el) {
   if (!el[EVENT_LISTENER_LIST]) {
     return;
   }
+
   /* jshint ignore:start */
 
   /**

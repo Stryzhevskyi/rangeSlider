@@ -12,16 +12,16 @@ Check out the [examples](http://stryzhevskyi.github.io/rangeSlider/).
 * Buffer progressbar (for downloading progress etc.)
 
 ## Install
+Install with [npm](https://www.npmjs.com/package/rangeslider-pure):
+``npm install --save rangeslider-pure``
+
 Install with [Bower](http://bower.io/):
 ``bower install --save rangeslider-pure``
-
-Install with [npm](https://www.npmjs.org/):
-``npm install --save rangeslider-pure``
 
 ## Usage
 
 ```js
-// Initialize a new plugin instance for element or array of elements.
+// Initialize a new plugin instance for one element or NodeList of elements.
 var slider = document.querySelectorAll('input[type="range"]');
 rangeSlider.create(slider, {
     polyfill: true,     // Boolean, if true, custom markup will be created
@@ -40,7 +40,7 @@ rangeSlider.create(slider, {
     value: null,        // Number, center of slider
     buffer: null,       // Number, in percent, 0 by default
     stick: null,        // [Number stickTo, Number stickRadius] : use it if handle should stick to stickTo-th value in stickRadius
-    borderRadius: 10,    // Number, if you use buffer + border-radius in css for looks good,
+    borderRadius: 10,   // Number, if you use buffer + border-radius in css for looks good,
     onInit: function () {
         console.info('onInit')
     },
@@ -55,13 +55,9 @@ rangeSlider.create(slider, {
     }
 });
 
-// then...
-var giveMeSomeEvents = true; // or false
-slider.rangeSlider.update({min : 0, max : 20, step : 0.5, value : 1.5, buffer : 70}, giveMeSomeEvents);
-// or
-slider.rangeSlider.onSlideStart: function (position, value) {
-                           console.error('anotherCallback', 'position: ' + position, 'value: ' + value);
-                       }
+// update position
+var triggerEvents = true; // or false
+slider.rangeSlider.update({min : 0, max : 20, step : 0.5, value : 1.5, buffer : 70}, triggerEvents);
 
 ```
 

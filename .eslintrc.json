@@ -1,0 +1,9 @@
+{
+    "extends": "standard",
+    "rules": {
+        "semi": 0,
+        "no-undef": 0,
+        "operator-linebreak": 0,
+        "space-before-function-paren": 0
+    }
+}

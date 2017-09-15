@@ -7,11 +7,7 @@
  * @param  {Number}   args arguments
  * @return {Function}
  */
-export const delay = (fn, wait, ...args) => {
-  return setTimeout(() => {
-    return fn.apply(null, args);
-  }, wait);
-};
+export const delay = (fn, wait, ...args) => setTimeout(() => fn.apply(null, args), wait);
 
 /**
  * Returns a debounced function that will make sure the given
@@ -22,19 +18,16 @@ export const delay = (fn, wait, ...args) => {
  *         function. (defaults to 100ms)
  * @return {Function}
  */
-export const debounce = (fn, debounceDuration) => {
-  debounceDuration = debounceDuration || 100;
-  return (...args) => {
-    if (!fn.debouncing) {
-      fn.lastReturnVal = fn.apply(window, args);
-      fn.debouncing = true;
-    }
-    clearTimeout(fn.debounceTimeout);
-    fn.debounceTimeout = setTimeout(() => {
-      fn.debouncing = false;
-    }, debounceDuration);
-    return fn.lastReturnVal;
-  };
+export const debounce = (fn, debounceDuration = 100) => (...args) => {
+  if (!fn.debouncing) {
+    fn.lastReturnVal = fn.apply(window, args);
+    fn.debouncing = true;
+  }
+  clearTimeout(fn.debounceTimeout);
+  fn.debounceTimeout = setTimeout(() => {
+    fn.debouncing = false;
+  }, debounceDuration);
+  return fn.lastReturnVal;
 };
 
 export const isString = obj => obj === '' + obj;
@@ -42,7 +35,7 @@ export const isString = obj => obj === '' + obj;
 export const isArray = obj => Object.prototype.toString.call(obj) === '[object Array]';
 
 export const isNumberLike = (obj) =>
-  (obj !== null && obj !== undefined && (isString(obj) && isFinite(parseFloat(obj)) || (isFinite(obj))));
+  (obj !== null && obj !== undefined && ((isString(obj) && isFinite(parseFloat(obj))) || (isFinite(obj))));
 
 export const getFirsNumberLike = (...args) => {
   if (!args.length) {
@@ -71,4 +64,14 @@ export const simpleExtend = (defaultOpt, options) => {
   }
 
   return opt;
+};
+
+export const between = (pos, min, max) => {
+  if (pos < min) {
+    return min;
+  }
+  if (pos > max) {
+    return max;
+  }
+  return pos;
 };

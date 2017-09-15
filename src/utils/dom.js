@@ -43,8 +43,8 @@ export const isHidden = (element) => (
 /**
  * Get hidden parentNodes of an `element`
  *
- * @param  {Element} element
- * @return {[type]}
+ * @param {Element} element
+ * @return {Element[]}
  */
 export const getHiddenParentNodes = (element) => {
   const parents = [];
@@ -152,7 +152,7 @@ export const removeClass = (elem, className) => {
 /**
  *
  * @param {HTMLElement} el
- * @callback callback
+ * @param {Function} callback
  * @param {boolean} andForElement - apply callback for el
  * @returns {HTMLElement}
  */
@@ -197,9 +197,9 @@ export const insertAfter = (referenceNode, newNode) =>
 
 /**
  * Add event listeners and push them to el[EVENT_LISTENER_LIST]
- * @param {HTMLElement} el DOM element
+ * @param {HTMLElement|Node|Document} el DOM element
  * @param {Array} events
- * @callback listener
+ * @param {Function} listener
  */
 export const addEventListeners = (el, events, listener) => {
   events.forEach((eventName) => {
@@ -225,7 +225,7 @@ export const addEventListeners = (el, events, listener) => {
  * Remove event listeners and remove them from el[EVENT_LISTENER_LIST]
  * @param {HTMLElement} el DOM element
  * @param {Array} events
- * @callback listener
+ * @param {Function} listener
  */
 export const removeEventListeners = (el, events, listener) => {
   events.forEach((eventName) => {
@@ -247,12 +247,14 @@ export const removeEventListeners = (el, events, listener) => {
 
 /**
  * Remove ALL event listeners which exists in el[EVENT_LISTENER_LIST]
+ * @param instance
  * @param {HTMLElement} el DOM element
  */
 export const removeAllListenersFromEl = (instance, el) => {
   if (!el[EVENT_LISTENER_LIST]) {
     return;
   }
+
   /* jshint ignore:start */
 
   /**
