@@ -430,10 +430,12 @@ export default class RangeSlider {
     if (this.vertical) {
       this.container.style.height = (position + this.grabX) + 'px';
       this.handle.style.transform = 'translateY(-' + position + 'px)';
+      this.handle.style['-webkit-transform'] = 'translateY(-' + position + 'px)';
       this.handle.style['-ms-transform'] = 'translateY(-' + position + 'px)';
     } else {
       this.container.style.width = (position + this.grabX) + 'px';
       this.handle.style.transform = 'translateX(' + position + 'px)';
+      this.handle.style['-webkit-transform'] = 'translateX(' + position + 'px)';
       this.handle.style['-ms-transform'] = 'translateX(' + position + 'px)';
     }
 
