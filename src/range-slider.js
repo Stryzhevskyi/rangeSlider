@@ -429,12 +429,14 @@ export default class RangeSlider {
     // Update ui
     if (this.vertical) {
       this.container.style.height = (position + this.grabX) + 'px';
+      this.handle.style['webkitTransform'] = 'translateY(-' + position + 'px)';
+      this.handle.style['msTransform'] = 'translateY(-' + position + 'px)';
       this.handle.style.transform = 'translateY(-' + position + 'px)';
-      this.handle.style['-ms-transform'] = 'translateY(-' + position + 'px)';
     } else {
       this.container.style.width = (position + this.grabX) + 'px';
+      this.handle.style['webkitTransform'] = 'translateX(' + position + 'px)';
+      this.handle.style['msTransform'] = 'translateX(' + position + 'px)';
       this.handle.style.transform = 'translateX(' + position + 'px)';
-      this.handle.style['-ms-transform'] = 'translateX(' + position + 'px)';
     }
 
     this._setValue(value);
