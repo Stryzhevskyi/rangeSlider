@@ -8,7 +8,6 @@ const HANDLE_RESIZE_DELAY = 300;
 const HANDLE_RESIZE_DEBOUNCE = 50;
 
 const pluginName = 'rangeSlider';
-let pluginIdentifier = 0;
 const inputrange = dom.supportsRange();
 const defaults = {
   polyfill: true,
@@ -29,6 +28,14 @@ const defaults = {
   borderRadius: 10,
   vertical: false
 };
+
+/**
+ * Create a random uuid
+ */
+const uuid = () => {
+    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
 
 /**
  * Plugin
@@ -65,7 +72,7 @@ export default class RangeSlider {
 
     this.options.buffer = this.options.buffer || parseFloat(this.element.getAttribute('data-buffer'));
 
-    this.identifier = 'js-' + pluginName + '-' + (pluginIdentifier++);
+    this.identifier = 'js-' + pluginName + '-' + uuid();
 
     this.min = func.getFirsNumberLike(
       this.options.min,
