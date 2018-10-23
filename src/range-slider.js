@@ -30,14 +30,6 @@ const defaults = {
 };
 
 /**
- * Create a random uuid
- */
-const uuid = () => {
-    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
-
-/**
  * Plugin
  * @param {HTMLElement} element
  * @param {this} options
@@ -72,7 +64,7 @@ export default class RangeSlider {
 
     this.options.buffer = this.options.buffer || parseFloat(this.element.getAttribute('data-buffer'));
 
-    this.identifier = 'js-' + pluginName + '-' + uuid();
+    this.identifier = 'js-' + pluginName + '-' + func.uuid();
 
     this.min = func.getFirsNumberLike(
       this.options.min,
