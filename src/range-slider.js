@@ -121,8 +121,8 @@ export default class RangeSlider {
     this.range = document.createElement('div');
     dom.addClass(this.range, this.options.rangeClass);
     this.range.id = this.identifier;
-    this.range.appendChild(this.handle);
     this.range.appendChild(this.container);
+    this.range.appendChild(this.handle);
 
     directionClass = this.vertical ? this.options.rangeClass + '__vertical' : this.options.rangeClass + '__horizontal';
     dom.addClass(this.range, directionClass);
@@ -302,7 +302,7 @@ export default class RangeSlider {
 
     dom.forEachAncestors(el, el =>
       (isEventOnSlider = el.id === this.identifier && !dom.hasClass(el, this.options.disabledClass)),
-    true);
+      true);
 
     if (isEventOnSlider) {
       this._handleDown(ev, data);
@@ -341,7 +341,7 @@ export default class RangeSlider {
       this._setBufferPosition(this.options.buffer);
     }
     this._updatePercentFromValue();
-    dom.triggerEvent(this.element, 'change', {origin: this.identifier});
+    dom.triggerEvent(this.element, 'change', { origin: this.identifier });
   }
 
   _handleResize() {
@@ -393,7 +393,7 @@ export default class RangeSlider {
     dom.removeEventListeners(document, this.options.endEvent, this._handleEnd);
 
     // Ok we're done fire the change event
-    dom.triggerEvent(this.element, 'change', {origin: this.identifier});
+    dom.triggerEvent(this.element, 'change', { origin: this.identifier });
 
     if (this.isInteractsNow || this.needTriggerEvents) {
       if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
@@ -584,6 +584,6 @@ export default class RangeSlider {
     // Set the new value and fire the `input` event
     this.element.value = value;
     this.value = value;
-    dom.triggerEvent(this.element, 'input', {origin: this.identifier});
+    dom.triggerEvent(this.element, 'input', { origin: this.identifier });
   }
 }
