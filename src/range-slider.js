@@ -120,11 +120,6 @@ export default class RangeSlider {
     this.range = document.createElement('div');
     dom.addClass(this.range, this.options.rangeClass);
     this.range.id = this.identifier;
-    this.range.appendChild(this.container);
-    this.range.appendChild(this.handle);
-
-    directionClass = this.vertical ? this.options.rangeClass + '__vertical' : this.options.rangeClass + '__horizontal';
-    dom.addClass(this.range, directionClass);
 
     if (this.options.bufferClass) {
       this.buffer = document.createElement('div');
@@ -136,6 +131,12 @@ export default class RangeSlider {
         this.options.bufferClass + '__horizontal';
       dom.addClass(this.buffer, directionClass);
     }
+
+    this.range.appendChild(this.container);
+    this.range.appendChild(this.handle);
+
+    directionClass = this.vertical ? this.options.rangeClass + '__vertical' : this.options.rangeClass + '__horizontal';
+    dom.addClass(this.range, directionClass);
 
     if (func.isNumberLike(this.options.value)) {
       this._setValue(this.options.value, true);
@@ -299,9 +300,11 @@ export default class RangeSlider {
       return;
     }
 
-    dom.forEachAncestors(el, el =>
-      (isEventOnSlider = el.id === this.identifier && !dom.hasClass(el, this.options.disabledClass)),
-      true);
+    dom.forEachAncestors(
+      el,
+      el => (isEventOnSlider = el.id === this.identifier && !dom.hasClass(el, this.options.disabledClass)),
+      true
+    );
 
     if (isEventOnSlider) {
       this._handleDown(ev, data);

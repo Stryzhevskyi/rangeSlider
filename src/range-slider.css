@@ -27,7 +27,6 @@
 .rangeSlider__fill {
     background: #16a085;
     position: absolute;
-    z-index: 2;
 }
 
 .rangeSlider__fill__horizontal {
@@ -49,7 +48,6 @@
     width: 40px;
     height: 40px;
     position: absolute;
-    z-index: 3;
     background: white linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.1));
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
     border-radius: 50%;
@@ -88,7 +86,6 @@ input[type="range"]:focus + .rangeSlider .rangeSlider__handle {
 }
 
 .rangeSlider__buffer {
-    z-index: 1;
     position: absolute;
     top: 3px;
     height: 14px;
