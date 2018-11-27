@@ -8,7 +8,6 @@ const HANDLE_RESIZE_DELAY = 300;
 const HANDLE_RESIZE_DEBOUNCE = 50;
 
 const pluginName = 'rangeSlider';
-let pluginIdentifier = 0;
 const inputrange = dom.supportsRange();
 const defaults = {
   polyfill: true,
@@ -65,7 +64,7 @@ export default class RangeSlider {
 
     this.options.buffer = this.options.buffer || parseFloat(this.element.getAttribute('data-buffer'));
 
-    this.identifier = 'js-' + pluginName + '-' + (pluginIdentifier++);
+    this.identifier = 'js-' + pluginName + '-' + func.uuid();
 
     this.min = func.getFirsNumberLike(
       this.options.min,
