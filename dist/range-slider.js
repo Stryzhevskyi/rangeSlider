@@ -84,6 +84,16 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 /**
+ * Create a random uuid
+ */
+var uuid = exports.uuid = function uuid() {
+  var s4 = function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  };
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+};
+
+/**
  * Delays a function for the given number of milliseconds, and then calls
  * it with the arguments supplied.
  *
@@ -220,7 +230,6 @@ var HANDLE_RESIZE_DELAY = 300;
 var HANDLE_RESIZE_DEBOUNCE = 50;
 
 var pluginName = 'rangeSlider';
-var pluginIdentifier = 0;
 var inputrange = dom.supportsRange();
 var defaults = {
   polyfill: true,
@@ -280,7 +289,7 @@ var RangeSlider = function () {
 
     this.options.buffer = this.options.buffer || parseFloat(this.element.getAttribute('data-buffer'));
 
-    this.identifier = 'js-' + pluginName + '-' + pluginIdentifier++;
+    this.identifier = 'js-' + pluginName + '-' + func.uuid();
 
     this.min = func.getFirsNumberLike(this.options.min, parseFloat(this.element.getAttribute('min')), minSetByDefault = 0);
 
@@ -324,11 +333,6 @@ var RangeSlider = function () {
     this.range = document.createElement('div');
     dom.addClass(this.range, this.options.rangeClass);
     this.range.id = this.identifier;
-    this.range.appendChild(this.handle);
-    this.range.appendChild(this.container);
-
-    directionClass = this.vertical ? this.options.rangeClass + '__vertical' : this.options.rangeClass + '__horizontal';
-    dom.addClass(this.range, directionClass);
 
     if (this.options.bufferClass) {
       this.buffer = document.createElement('div');
@@ -338,6 +342,12 @@ var RangeSlider = function () {
       directionClass = this.vertical ? this.options.bufferClass + '__vertical' : this.options.bufferClass + '__horizontal';
       dom.addClass(this.buffer, directionClass);
     }
+
+    this.range.appendChild(this.container);
+    this.range.appendChild(this.handle);
+
+    directionClass = this.vertical ? this.options.rangeClass + '__vertical' : this.options.rangeClass + '__horizontal';
+    dom.addClass(this.range, directionClass);
 
     if (func.isNumberLike(this.options.value)) {
       this._setValue(this.options.value, true);

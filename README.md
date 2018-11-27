@@ -6,7 +6,7 @@
 Check out the [examples](http://stryzhevskyi.github.io/rangeSlider/).
 
 * Touchscreen friendly
-* Recalculates `onresize` so suitable for use within responsive designs
+* Recalculates `onresize`
 * Small and fast
 * Supports all major browsers
 * Buffer progressbar (for downloading progress etc.)
@@ -14,9 +14,6 @@ Check out the [examples](http://stryzhevskyi.github.io/rangeSlider/).
 ## Install
 Install with [npm](https://www.npmjs.com/package/rangeslider-pure):
 ``npm install --save rangeslider-pure``
-
-Install with [Bower](http://bower.io/):
-``bower install --save rangeslider-pure``
 
 ## Usage
 
@@ -57,7 +54,13 @@ rangeSlider.create(slider, {
 
 // update position
 var triggerEvents = true; // or false
-slider.rangeSlider.update({min : 0, max : 20, step : 0.5, value : 1.5, buffer : 70}, triggerEvents);
+slider.rangeSlider.update({
+    min : 0,
+    max : 20, 
+    step : 0.5,
+    value : 1.5,
+    buffer : 70
+}, triggerEvents);
 
 ```
 
@@ -70,6 +73,8 @@ slider.rangeSlider.update({min : 0, max : 20, step : 0.5, value : 1.5, buffer : 
     data-buffer="60" />
 ```
 
+
+Use [Codepen](https://codepen.io/Stryzhevskyi/pen/eQLGNQ) template for issues
 
 ## License
 MIT
