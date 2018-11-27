@@ -1,8 +1,0 @@
-.editorconfig
-.gitattributes
-.gitignore
-.jshintrc
-.eslintrc.json
-.idea/
-bower.json
-example/
