@@ -67,7 +67,7 @@ export const getHiddenParentNodes = (element) => {
 export const getDimension = (element, key) => {
   const hiddenParentNodes = getHiddenParentNodes(element);
   const hiddenParentNodesLength = hiddenParentNodes.length;
-  const displayProperty = [];
+  const hiddenParentNodesStyle = [];
   let dimension = element[key];
 
   // Used for native `<details>` elements
@@ -79,8 +79,13 @@ export const getDimension = (element, key) => {
 
   if (hiddenParentNodesLength) {
     for (let i = 0; i < hiddenParentNodesLength; i++) {
-      // Cache the display property to restore it later.
-      displayProperty[i] = hiddenParentNodes[i].style.display;
+      // Cache the styles to restore then later.
+      hiddenParentNodesStyle.push({
+        display: hiddenParentNodes[i].style.display,
+        height: hiddenParentNodes[i].style.height,
+        overflow: hiddenParentNodes[i].style.overflow,
+        visibility: hiddenParentNodes[i].style.visibility
+      });
 
       hiddenParentNodes[i].style.display = 'block';
       hiddenParentNodes[i].style.height = '0';
@@ -93,10 +98,10 @@ export const getDimension = (element, key) => {
 
     for (let j = 0; j < hiddenParentNodesLength; j++) {
       toggleOpenProperty(hiddenParentNodes[j]);
-      hiddenParentNodes[j].style.display = displayProperty[j];
-      hiddenParentNodes[j].style.height = '';
-      hiddenParentNodes[j].style.overflow = '';
-      hiddenParentNodes[j].style.visibility = '';
+      hiddenParentNodes[j].style.display = hiddenParentNodesStyle[j].display;
+      hiddenParentNodes[j].style.height = hiddenParentNodesStyle[j].height;
+      hiddenParentNodes[j].style.overflow = hiddenParentNodesStyle[j].overflow;
+      hiddenParentNodes[j].style.visibility = hiddenParentNodesStyle[j].visibility;
     }
   }
   return dimension;

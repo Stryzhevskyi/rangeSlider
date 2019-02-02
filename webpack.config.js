@@ -1,29 +1,23 @@
-const webpack = require('webpack');
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const path = require('path');
 
 const libraryName = 'range-slider';
-
+const isProduction = process.env.NODE_ENV === 'production';
+const mode = isProduction ? 'production' : 'development';
 const plugins = [
-  new ExtractTextPlugin('range-slider.css')
+  new MiniCssExtractPlugin({
+    filename: isProduction ? 'range-slider.min.css' : 'range-slider.css',
+    chunkFilename: '[id].css'
+  })
 ];
 
-let outputFile;
-
-if (process.env.NODE_ENV === 'build') {
-  plugins.push(new UglifyJsPlugin({
-    minimize: true,
-    sourceMap: true
-  }));
-
-  outputFile = libraryName + '.min.js';
-} else {
-  outputFile = libraryName + '.js';
-}
+let outputFile = isProduction ? libraryName + '.min.js' : libraryName + '.js';
 
 const config = {
   entry: path.join(__dirname, '/src/range-slider.js'),
+  mode: mode,
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, '/dist'),
@@ -31,6 +25,16 @@ const config = {
     library: 'rangeSlider',
     libraryTarget: 'umd',
     umdNamedDefine: true
+  },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true
+      }),
+      new OptimizeCSSAssetsPlugin({})
+    ]
   },
   module: {
     rules: [
@@ -46,9 +50,13 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: ['css-loader', 'postcss-loader']
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: { sourceMap: true },
+          }
+        ]
       }
     ]
   },

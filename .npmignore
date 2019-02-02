@@ -1,6 +1,7 @@
 .editorconfig
 .gitattributes
 .gitignore
+.github
 .jshintrc
 .eslintrc.json
 .idea/

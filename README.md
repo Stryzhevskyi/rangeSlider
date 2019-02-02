@@ -74,7 +74,7 @@ slider.rangeSlider.update({
 ```
 
 
-Use [Codepen](https://codepen.io/Stryzhevskyi/pen/eQLGNQ) template for issues
+Use [JSFiddle](https://jsfiddle.net/Stryzhevskyi/rpsa16fn/) template for issues
 
 ## License
 MIT
