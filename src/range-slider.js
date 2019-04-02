@@ -11,6 +11,7 @@ const pluginName = 'rangeSlider';
 const inputrange = dom.supportsRange();
 const defaults = {
   polyfill: true,
+  root: document,
   rangeClass: 'rangeSlider',
   disabledClass: 'rangeSlider--disabled',
   fillClass: 'rangeSlider__fill',
@@ -183,7 +184,7 @@ export default class RangeSlider {
     // Attach Events
     window.addEventListener('resize', this._handleResize, false);
 
-    dom.addEventListeners(document, this.options.startEvent, this._startEventListener);
+    dom.addEventListeners(this.options.root, this.options.startEvent, this._startEventListener);
 
     // Listen to programmatic value changes
     this.element.addEventListener('change', this._changeEventListener, false);
@@ -232,7 +233,7 @@ export default class RangeSlider {
   };
 
   destroy() {
-    dom.removeAllListenersFromEl(this, document);
+    dom.removeAllListenersFromEl(this, this.options.root);
     window.removeEventListener('resize', this._handleResize, false);
     this.element.removeEventListener('change', this._changeEventListener, false);
 
@@ -358,8 +359,8 @@ export default class RangeSlider {
   _handleDown(e) {
     this.isInteractsNow = true;
     e.preventDefault();
-    dom.addEventListeners(document, this.options.moveEvent, this._handleMove);
-    dom.addEventListeners(document, this.options.endEvent, this._handleEnd);
+    dom.addEventListeners(this.options.root, this.options.moveEvent, this._handleMove);
+    dom.addEventListeners(this.options.root, this.options.endEvent, this._handleEnd);
 
     // If we click on the handle don't set the new position
     if ((' ' + e.target.className + ' ').replace(newLineAndTabRegexp, ' ').indexOf(this.options.handleClass) > -1) {
@@ -391,8 +392,8 @@ export default class RangeSlider {
 
   _handleEnd(e) {
     e.preventDefault();
-    dom.removeEventListeners(document, this.options.moveEvent, this._handleMove);
-    dom.removeEventListeners(document, this.options.endEvent, this._handleEnd);
+    dom.removeEventListeners(this.options.root, this.options.moveEvent, this._handleMove);
+    dom.removeEventListeners(this.options.root, this.options.endEvent, this._handleEnd);
 
     // Ok we're done fire the change event
     dom.triggerEvent(this.element, 'change', { origin: this.identifier });
