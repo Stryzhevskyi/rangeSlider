@@ -50,7 +50,7 @@ export const getHiddenParentNodes = (element) => {
   const parents = [];
   let node = element.parentNode;
 
-  while (isHidden(node)) {
+  while (node && isHidden(node)) {
     parents.push(node);
     node = node.parentNode;
   }
@@ -252,7 +252,7 @@ export const removeEventListeners = (el, events, listener) => {
 
 /**
  * Remove ALL event listeners which exists in el[EVENT_LISTENER_LIST]
- * @param instance
+ * @param {RangeSlider} instance
  * @param {HTMLElement} el DOM element
  */
 export const removeAllListenersFromEl = (instance, el) => {

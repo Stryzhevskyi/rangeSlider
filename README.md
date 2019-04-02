@@ -19,9 +19,10 @@ Install with [npm](https://www.npmjs.com/package/rangeslider-pure):
 
 ```js
 // Initialize a new plugin instance for one element or NodeList of elements.
-var slider = document.querySelectorAll('input[type="range"]');
+const slider = document.querySelector('input[type="range"]');
 rangeSlider.create(slider, {
     polyfill: true,     // Boolean, if true, custom markup will be created
+    root: document,
     rangeClass: 'rangeSlider',
     disabledClass: 'rangeSlider--disabled',
     fillClass: 'rangeSlider__fill',
@@ -53,7 +54,7 @@ rangeSlider.create(slider, {
 });
 
 // update position
-var triggerEvents = true; // or false
+const triggerEvents = true; // or false
 slider.rangeSlider.update({
     min : 0,
     max : 20, 
@@ -73,8 +74,23 @@ slider.rangeSlider.update({
     data-buffer="60" />
 ```
 
+### Internal APIs:
+```js
+/*
+* @see src/utils/dom.js
+ */
+RangeSlider.dom;
+/*
+* @see src/utils/functions.js
+ */
+RangeSlider.functions;
+RangeSlider.version;
+
+```
+
 
 Use [JSFiddle](https://jsfiddle.net/Stryzhevskyi/rpsa16fn/) template for issues
 
+Alternative template on [StackBlitz](https://stackblitz.com/edit/rangeslider-pure-example)
 ## License
 MIT

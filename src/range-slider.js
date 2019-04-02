@@ -590,3 +590,7 @@ export default class RangeSlider {
     dom.triggerEvent(this.element, 'input', { origin: this.identifier });
   }
 }
+
+RangeSlider.version = VERSION;
+RangeSlider.dom = dom;
+RangeSlider.functions = func;
