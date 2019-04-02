@@ -7,7 +7,7 @@
 		exports["rangeSlider"] = factory();
 	else
 		root["rangeSlider"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
+})(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -46,12 +46,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -69,136 +89,29 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/range-slider.js");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ "./src/range-slider.css":
+/*!******************************!*\
+  !*** ./src/range-slider.css ***!
+  \******************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/**
- * Create a random uuid
- */
-var uuid = exports.uuid = function uuid() {
-  var s4 = function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  };
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-};
-
-/**
- * Delays a function for the given number of milliseconds, and then calls
- * it with the arguments supplied.
- *
- * @param  {Function} fn   function
- * @param  {Number}   wait delay
- * @param  {Number}   args arguments
- * @return {Function}
- */
-var delay = exports.delay = function delay(fn, wait) {
-  for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    args[_key - 2] = arguments[_key];
-  }
-
-  return setTimeout(function () {
-    return fn.apply(null, args);
-  }, wait);
-};
-
-/**
- * Returns a debounced function that will make sure the given
- * function is not triggered too much.
- *
- * @param  {Function} fn Function to debounce.
- * @param  {Number}   debounceDuration OPTIONAL. The amount of time in milliseconds for which we will debounce the
- *         function. (defaults to 100ms)
- * @return {Function}
- */
-var debounce = exports.debounce = function debounce(fn) {
-  var debounceDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-  return function () {
-    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
-
-    if (!fn.debouncing) {
-      fn.lastReturnVal = fn.apply(window, args);
-      fn.debouncing = true;
-    }
-    clearTimeout(fn.debounceTimeout);
-    fn.debounceTimeout = setTimeout(function () {
-      fn.debouncing = false;
-    }, debounceDuration);
-    return fn.lastReturnVal;
-  };
-};
-
-var isString = exports.isString = function isString(obj) {
-  return obj === '' + obj;
-};
-
-var isArray = exports.isArray = function isArray(obj) {
-  return Object.prototype.toString.call(obj) === '[object Array]';
-};
-
-var isNumberLike = exports.isNumberLike = function isNumberLike(obj) {
-  return obj !== null && obj !== undefined && (isString(obj) && isFinite(parseFloat(obj)) || isFinite(obj));
-};
-
-var getFirsNumberLike = exports.getFirsNumberLike = function getFirsNumberLike() {
-  for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-    args[_key3] = arguments[_key3];
-  }
-
-  if (!args.length) {
-    return null;
-  }
-
-  for (var i = 0, len = args.length; i < len; i++) {
-    if (isNumberLike(args[i])) {
-      return args[i];
-    }
-  }
-
-  return null;
-};
-
-var isObject = exports.isObject = function isObject(obj) {
-  return Object.prototype.toString.call(obj) === '[object Object]';
-};
-
-var simpleExtend = exports.simpleExtend = function simpleExtend(defaultOpt, options) {
-  var opt = {};
-
-  for (var key in defaultOpt) {
-    opt[key] = defaultOpt[key];
-  }
-  for (var _key4 in options) {
-    opt[_key4] = options[_key4];
-  }
-
-  return opt;
-};
-
-var between = exports.between = function between(pos, min, max) {
-  if (pos < min) {
-    return min;
-  }
-  if (pos > max) {
-    return max;
-  }
-  return pos;
-};
+// extracted by mini-css-extract-plugin
 
 /***/ }),
-/* 1 */
+
+/***/ "./src/range-slider.js":
+/*!*****************************!*\
+  !*** ./src/range-slider.js ***!
+  \*****************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -210,15 +123,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(2);
+var _dom = __webpack_require__(/*! ./utils/dom */ "./src/utils/dom.js");
 
 var dom = _interopRequireWildcard(_dom);
 
-var _functions = __webpack_require__(0);
+var _functions = __webpack_require__(/*! ./utils/functions */ "./src/utils/functions.js");
 
 var func = _interopRequireWildcard(_functions);
 
-__webpack_require__(3);
+__webpack_require__(/*! ./range-slider.css */ "./src/range-slider.css");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -233,6 +146,7 @@ var pluginName = 'rangeSlider';
 var inputrange = dom.supportsRange();
 var defaults = {
   polyfill: true,
+  root: document,
   rangeClass: 'rangeSlider',
   disabledClass: 'rangeSlider--disabled',
   fillClass: 'rangeSlider__fill',
@@ -394,7 +308,7 @@ var RangeSlider = function () {
     // Attach Events
     window.addEventListener('resize', this._handleResize, false);
 
-    dom.addEventListeners(document, this.options.startEvent, this._startEventListener);
+    dom.addEventListeners(this.options.root, this.options.startEvent, this._startEventListener);
 
     // Listen to programmatic value changes
     this.element.addEventListener('change', this._changeEventListener, false);
@@ -448,7 +362,7 @@ var RangeSlider = function () {
   }, {
     key: 'destroy',
     value: function destroy() {
-      dom.removeAllListenersFromEl(this, document);
+      dom.removeAllListenersFromEl(this, this.options.root);
       window.removeEventListener('resize', this._handleResize, false);
       this.element.removeEventListener('change', this._changeEventListener, false);
 
@@ -570,8 +484,8 @@ var RangeSlider = function () {
     value: function _handleDown(e) {
       this.isInteractsNow = true;
       e.preventDefault();
-      dom.addEventListeners(document, this.options.moveEvent, this._handleMove);
-      dom.addEventListeners(document, this.options.endEvent, this._handleEnd);
+      dom.addEventListeners(this.options.root, this.options.moveEvent, this._handleMove);
+      dom.addEventListeners(this.options.root, this.options.endEvent, this._handleEnd);
 
       // If we click on the handle don't set the new position
       if ((' ' + e.target.className + ' ').replace(newLineAndTabRegexp, ' ').indexOf(this.options.handleClass) > -1) {
@@ -605,8 +519,8 @@ var RangeSlider = function () {
     key: '_handleEnd',
     value: function _handleEnd(e) {
       e.preventDefault();
-      dom.removeEventListeners(document, this.options.moveEvent, this._handleMove);
-      dom.removeEventListeners(document, this.options.endEvent, this._handleEnd);
+      dom.removeEventListeners(this.options.root, this.options.moveEvent, this._handleMove);
+      dom.removeEventListeners(this.options.root, this.options.endEvent, this._handleEnd);
 
       // Ok we're done fire the change event
       dom.triggerEvent(this.element, 'change', { origin: this.identifier });
@@ -839,10 +753,20 @@ var RangeSlider = function () {
 }();
 
 exports.default = RangeSlider;
+
+
+RangeSlider.version = "0.4.8";
+RangeSlider.dom = dom;
+RangeSlider.functions = func;
 module.exports = exports['default'];
 
 /***/ }),
-/* 2 */
+
+/***/ "./src/utils/dom.js":
+/*!**************************!*\
+  !*** ./src/utils/dom.js ***!
+  \**************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -853,7 +777,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.supportsRange = exports.removeAllListenersFromEl = exports.removeEventListeners = exports.addEventListeners = exports.insertAfter = exports.triggerEvent = exports.forEachAncestors = exports.removeClass = exports.addClass = exports.hasClass = exports.setCss = exports.getDimension = exports.getHiddenParentNodes = exports.isHidden = exports.detectIE = undefined;
 
-var _functions = __webpack_require__(0);
+var _functions = __webpack_require__(/*! ./functions */ "./src/utils/functions.js");
 
 var func = _interopRequireWildcard(_functions);
 
@@ -909,7 +833,7 @@ var getHiddenParentNodes = exports.getHiddenParentNodes = function getHiddenPare
   var parents = [];
   var node = element.parentNode;
 
-  while (isHidden(node)) {
+  while (node && isHidden(node)) {
     parents.push(node);
     node = node.parentNode;
   }
@@ -926,7 +850,7 @@ var getHiddenParentNodes = exports.getHiddenParentNodes = function getHiddenPare
 var getDimension = exports.getDimension = function getDimension(element, key) {
   var hiddenParentNodes = getHiddenParentNodes(element);
   var hiddenParentNodesLength = hiddenParentNodes.length;
-  var displayProperty = [];
+  var hiddenParentNodesStyle = [];
   var dimension = element[key];
 
   // Used for native `<details>` elements
@@ -938,8 +862,13 @@ var getDimension = exports.getDimension = function getDimension(element, key) {
 
   if (hiddenParentNodesLength) {
     for (var i = 0; i < hiddenParentNodesLength; i++) {
-      // Cache the display property to restore it later.
-      displayProperty[i] = hiddenParentNodes[i].style.display;
+      // Cache the styles to restore then later.
+      hiddenParentNodesStyle.push({
+        display: hiddenParentNodes[i].style.display,
+        height: hiddenParentNodes[i].style.height,
+        overflow: hiddenParentNodes[i].style.overflow,
+        visibility: hiddenParentNodes[i].style.visibility
+      });
 
       hiddenParentNodes[i].style.display = 'block';
       hiddenParentNodes[i].style.height = '0';
@@ -952,10 +881,10 @@ var getDimension = exports.getDimension = function getDimension(element, key) {
 
     for (var j = 0; j < hiddenParentNodesLength; j++) {
       toggleOpenProperty(hiddenParentNodes[j]);
-      hiddenParentNodes[j].style.display = displayProperty[j];
-      hiddenParentNodes[j].style.height = '';
-      hiddenParentNodes[j].style.overflow = '';
-      hiddenParentNodes[j].style.visibility = '';
+      hiddenParentNodes[j].style.display = hiddenParentNodesStyle[j].display;
+      hiddenParentNodes[j].style.height = hiddenParentNodesStyle[j].height;
+      hiddenParentNodes[j].style.overflow = hiddenParentNodesStyle[j].overflow;
+      hiddenParentNodes[j].style.visibility = hiddenParentNodesStyle[j].visibility;
     }
   }
   return dimension;
@@ -1099,7 +1028,7 @@ var removeEventListeners = exports.removeEventListeners = function removeEventLi
 
 /**
  * Remove ALL event listeners which exists in el[EVENT_LISTENER_LIST]
- * @param instance
+ * @param {RangeSlider} instance
  * @param {HTMLElement} el DOM element
  */
 var removeAllListenersFromEl = exports.removeAllListenersFromEl = function removeAllListenersFromEl(instance, el) {
@@ -1140,12 +1069,136 @@ var supportsRange = exports.supportsRange = function supportsRange() {
 };
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+/***/ "./src/utils/functions.js":
+/*!********************************!*\
+  !*** ./src/utils/functions.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Create a random uuid
+ */
+var uuid = exports.uuid = function uuid() {
+  var s4 = function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  };
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+};
+
+/**
+ * Delays a function for the given number of milliseconds, and then calls
+ * it with the arguments supplied.
+ *
+ * @param  {Function} fn   function
+ * @param  {Number}   wait delay
+ * @param  {Number}   args arguments
+ * @return {Function}
+ */
+var delay = exports.delay = function delay(fn, wait) {
+  for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+
+  return setTimeout(function () {
+    return fn.apply(null, args);
+  }, wait);
+};
+
+/**
+ * Returns a debounced function that will make sure the given
+ * function is not triggered too much.
+ *
+ * @param  {Function} fn Function to debounce.
+ * @param  {Number}   debounceDuration OPTIONAL. The amount of time in milliseconds for which we will debounce the
+ *         function. (defaults to 100ms)
+ * @return {Function}
+ */
+var debounce = exports.debounce = function debounce(fn) {
+  var debounceDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+  return function () {
+    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    if (!fn.debouncing) {
+      fn.lastReturnVal = fn.apply(window, args);
+      fn.debouncing = true;
+    }
+    clearTimeout(fn.debounceTimeout);
+    fn.debounceTimeout = setTimeout(function () {
+      fn.debouncing = false;
+    }, debounceDuration);
+    return fn.lastReturnVal;
+  };
+};
+
+var isString = exports.isString = function isString(obj) {
+  return obj === '' + obj;
+};
+
+var isArray = exports.isArray = function isArray(obj) {
+  return Object.prototype.toString.call(obj) === '[object Array]';
+};
+
+var isNumberLike = exports.isNumberLike = function isNumberLike(obj) {
+  return obj !== null && obj !== undefined && (isString(obj) && isFinite(parseFloat(obj)) || isFinite(obj));
+};
+
+var getFirsNumberLike = exports.getFirsNumberLike = function getFirsNumberLike() {
+  for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+    args[_key3] = arguments[_key3];
+  }
+
+  if (!args.length) {
+    return null;
+  }
+
+  for (var i = 0, len = args.length; i < len; i++) {
+    if (isNumberLike(args[i])) {
+      return args[i];
+    }
+  }
+
+  return null;
+};
+
+var isObject = exports.isObject = function isObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+var simpleExtend = exports.simpleExtend = function simpleExtend(defaultOpt, options) {
+  var opt = {};
+
+  for (var key in defaultOpt) {
+    opt[key] = defaultOpt[key];
+  }
+  for (var _key4 in options) {
+    opt[_key4] = options[_key4];
+  }
+
+  return opt;
+};
+
+var between = exports.between = function between(pos, min, max) {
+  if (pos < min) {
+    return min;
+  }
+  if (pos > max) {
+    return max;
+  }
+  return pos;
+};
 
 /***/ })
-/******/ ]);
+
+/******/ });
 });
 //# sourceMappingURL=range-slider.js.map

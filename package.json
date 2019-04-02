@@ -1,14 +1,13 @@
 {
   "name": "rangeslider-pure-example",
-  "version": "0.4.6",
+  "version": "0.4.8",
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "rangeslider-pure": "0.4.*"
+    "rangeslider-pure": "^0.4.8"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "sh -c 'npm up' && cp ./node_modules/rangeslider-pure/dist/range-slider.js ./javascripts && cp ./node_modules/rangeslider-pure/dist/range-slider.css ./stylesheets"
   },
   "repository": {
