@@ -281,7 +281,7 @@ export default class RangeSlider {
     if (this.onInit && typeof this.onInit === 'function') {
       this.onInit();
     }
-    this._update();
+    this._update(false);
   }
 
   _updatePercentFromValue() {
@@ -323,7 +323,7 @@ export default class RangeSlider {
     this._setPosition(pos);
   }
 
-  _update() {
+  _update(triggerEvent) {
     const sizeProperty = this.vertical ? 'offsetHeight' : 'offsetWidth';
 
     this.handleSize = dom.getDimension(this.handle, sizeProperty);
@@ -344,7 +344,9 @@ export default class RangeSlider {
       this._setBufferPosition(this.options.buffer);
     }
     this._updatePercentFromValue();
-    dom.triggerEvent(this.element, 'change', { origin: this.identifier });
+    if (triggerEvent !== false) {
+      dom.triggerEvent(this.element, 'change', { origin: this.identifier });
+    }
   }
 
   _handleResize() {
