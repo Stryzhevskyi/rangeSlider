@@ -757,7 +757,7 @@ var RangeSlider = function () {
 exports.default = RangeSlider;
 
 
-RangeSlider.version = "0.4.8";
+RangeSlider.version = "0.4.9";
 RangeSlider.dom = dom;
 RangeSlider.functions = func;
 module.exports = exports['default'];
