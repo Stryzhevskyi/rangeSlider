@@ -396,7 +396,7 @@ var RangeSlider = function () {
       if (this.onInit && typeof this.onInit === 'function') {
         this.onInit();
       }
-      this._update();
+      this._update(false);
     }
   }, {
     key: '_updatePercentFromValue',
@@ -444,7 +444,7 @@ var RangeSlider = function () {
     }
   }, {
     key: '_update',
-    value: function _update() {
+    value: function _update(triggerEvent) {
       var sizeProperty = this.vertical ? 'offsetHeight' : 'offsetWidth';
 
       this.handleSize = dom.getDimension(this.handle, sizeProperty);
@@ -465,7 +465,9 @@ var RangeSlider = function () {
         this._setBufferPosition(this.options.buffer);
       }
       this._updatePercentFromValue();
-      dom.triggerEvent(this.element, 'change', { origin: this.identifier });
+      if (triggerEvent !== false) {
+        dom.triggerEvent(this.element, 'change', { origin: this.identifier });
+      }
     }
   }, {
     key: '_handleResize',
