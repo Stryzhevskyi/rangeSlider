@@ -2,7 +2,7 @@
   "name": "rangeslider-pure",
   "title": "range-slider",
   "description": "Simple, small and fast vanilla JavaScript polyfill for the HTML5 <input type=\"range\"> slider element",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "main": "dist/range-slider.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --no-inline --watch-content-base",
