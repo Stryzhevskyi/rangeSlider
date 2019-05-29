@@ -248,6 +248,11 @@ var RangeSlider = function () {
     dom.addClass(this.range, this.options.rangeClass);
     this.range.id = this.identifier;
 
+    var elementTitle = element.getAttribute('title');
+    if (elementTitle && elementTitle.length > 0) {
+      this.range.setAttribute('title', elementTitle);
+    }
+
     if (this.options.bufferClass) {
       this.buffer = document.createElement('div');
       dom.addClass(this.buffer, this.options.bufferClass);
@@ -396,7 +401,7 @@ var RangeSlider = function () {
       if (this.onInit && typeof this.onInit === 'function') {
         this.onInit();
       }
-      this._update();
+      this._update(false);
     }
   }, {
     key: '_updatePercentFromValue',
@@ -444,7 +449,7 @@ var RangeSlider = function () {
     }
   }, {
     key: '_update',
-    value: function _update() {
+    value: function _update(triggerEvent) {
       var sizeProperty = this.vertical ? 'offsetHeight' : 'offsetWidth';
 
       this.handleSize = dom.getDimension(this.handle, sizeProperty);
@@ -465,7 +470,9 @@ var RangeSlider = function () {
         this._setBufferPosition(this.options.buffer);
       }
       this._updatePercentFromValue();
-      dom.triggerEvent(this.element, 'change', { origin: this.identifier });
+      if (triggerEvent !== false) {
+        dom.triggerEvent(this.element, 'change', { origin: this.identifier });
+      }
     }
   }, {
     key: '_handleResize',
@@ -755,7 +762,7 @@ var RangeSlider = function () {
 exports.default = RangeSlider;
 
 
-RangeSlider.version = "0.4.8";
+RangeSlider.version = "0.4.10";
 RangeSlider.dom = dom;
 RangeSlider.functions = func;
 module.exports = exports['default'];

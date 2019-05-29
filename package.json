@@ -1,6 +1,6 @@
 {
   "name": "rangeslider-pure-example",
-  "version": "0.4.8",
+  "version": "0.4.10",
   "description": "",
   "main": "index.js",
   "dependencies": {
@@ -8,7 +8,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "sh -c 'npm up' && cp ./node_modules/rangeslider-pure/dist/range-slider.js ./javascripts && cp ./node_modules/rangeslider-pure/dist/range-slider.css ./stylesheets"
+    "postinstall": "sh -c 'npm up' && cp ./node_modules/rangeslider-pure/dist/range-slider.js ./javascripts && cp ./node_modules/rangeslider-pure/dist/range-slider.min.css ./stylesheets/range-slider.css"
   },
   "repository": {
     "type": "git",
