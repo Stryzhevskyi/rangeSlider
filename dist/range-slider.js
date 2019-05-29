@@ -248,6 +248,11 @@ var RangeSlider = function () {
     dom.addClass(this.range, this.options.rangeClass);
     this.range.id = this.identifier;
 
+    var elementTitle = element.getAttribute('title');
+    if (elementTitle && elementTitle.length > 0) {
+      this.range.setAttribute('title', elementTitle);
+    }
+
     if (this.options.bufferClass) {
       this.buffer = document.createElement('div');
       dom.addClass(this.buffer, this.options.bufferClass);
