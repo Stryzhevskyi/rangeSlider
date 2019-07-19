@@ -325,6 +325,7 @@ export default class RangeSlider {
     const value = ev.target.value;
     const pos = this._getPositionFromValue(value);
 
+    this.isInteractsNow = true;
     this._setPosition(pos);
   }
 

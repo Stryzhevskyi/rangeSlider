@@ -445,6 +445,7 @@ var RangeSlider = function () {
       var value = ev.target.value;
       var pos = this._getPositionFromValue(value);
 
+      this.isInteractsNow = true;
       this._setPosition(pos);
     }
   }, {
