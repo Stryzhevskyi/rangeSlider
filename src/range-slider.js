@@ -30,6 +30,8 @@ const defaults = {
   vertical: false
 };
 
+let verticalSlidingFixRegistered = false;
+
 /**
  * Plugin
  * @param {HTMLElement} element
@@ -43,6 +45,8 @@ export default class RangeSlider {
     let stickAttribute;
     let stickValues;
 
+    RangeSlider.instances.push(this);
+
     this.element = element;
     this.options = func.simpleExtend(defaults, options);
     this.polyfill = this.options.polyfill;
@@ -54,6 +58,8 @@ export default class RangeSlider {
     this.onSlideEventsCount = -1;
     this.isInteractsNow = false;
     this.needTriggerEvents = false;
+
+    this._addVerticalSlideScrollFix();
 
     // Plugin should only be used as a polyfill
     if (!this.polyfill) {
@@ -195,6 +201,37 @@ export default class RangeSlider {
     this.element.addEventListener('change', this._changeEventListener, false);
   }
 
+  /**
+   * A lightweight plugin wrapper around the constructor,preventing against multiple instantiations
+   * @param {Element} el
+   * @param {Object} options
+   */
+  static create(el, options) {
+    const createInstance = (el) => {
+      let data = el[pluginName];
+
+      // Create a new instance.
+      if (!data) {
+        data = new RangeSlider(el, options);
+        el[pluginName] = data;
+      }
+    };
+
+    if (el.length) {
+      Array.prototype.slice.call(el).forEach(function (el) {
+        createInstance(el);
+      });
+    } else {
+      createInstance(el);
+    }
+  }
+
+  static _touchMoveScrollHandler (event) {
+    if (RangeSlider.slidingVertically) {
+      event.preventDefault();
+    }
+  }
+
   /* public methods */
 
   /**
@@ -249,30 +286,11 @@ export default class RangeSlider {
     if (this.range) {
       this.range.parentNode.removeChild(this.range);
     }
-  }
 
-  /**
-   * A lightweight plugin wrapper around the constructor,preventing against multiple instantiations
-   * @param {Element} el
-   * @param {Object} options
-   */
-  static create(el, options) {
-    const createInstance = (el) => {
-      let data = el[pluginName];
+    RangeSlider.instances = RangeSlider.instances.filter((plugin) => plugin !== this);
 
-      // Create a new instance.
-      if (!data) {
-        data = new RangeSlider(el, options);
-        el[pluginName] = data;
-      }
-    };
-
-    if (el.length) {
-      Array.prototype.slice.call(el).forEach(function (el) {
-        createInstance(el);
-      });
-    } else {
-      createInstance(el);
+    if (!RangeSlider.instances.some((plugin) => plugin.vertical)) {
+      this._removeVerticalSlideScrollFix();
     }
   }
 
@@ -354,6 +372,18 @@ export default class RangeSlider {
     }
   }
 
+  _addVerticalSlideScrollFix() {
+    if (this.vertical && !verticalSlidingFixRegistered) {
+      document.addEventListener('touchmove', RangeSlider._touchMoveScrollHandler, { passive: false });
+      verticalSlidingFixRegistered = true;
+    }
+  }
+
+  _removeVerticalSlideScrollFix() {
+    document.removeEventListener('touchmove', RangeSlider._touchMoveScrollHandler);
+    verticalSlidingFixRegistered = false;
+  }
+
   _handleResize() {
     return func.debounce(() => {
       // Simulate resizeEnd event.
@@ -409,6 +439,10 @@ export default class RangeSlider {
       if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
         this.onSlideEnd(this.value, this.percent, this.position);
       }
+
+      if (this.vertical) {
+        RangeSlider.slidingVertically = false;
+      }
     }
     this.onSlideEventsCount = 0;
     this.isInteractsNow = false;
@@ -463,6 +497,10 @@ export default class RangeSlider {
 
       if (this.onSlide && typeof this.onSlide === 'function') {
         this.onSlide(this.value, this.percent, this.position);
+      }
+
+      if (this.vertical) {
+        RangeSlider.slidingVertically = true;
       }
     }
 
@@ -601,3 +639,5 @@ export default class RangeSlider {
 RangeSlider.version = VERSION;
 RangeSlider.dom = dom;
 RangeSlider.functions = func;
+RangeSlider.instances = [];
+RangeSlider.slidingVertically = false;
