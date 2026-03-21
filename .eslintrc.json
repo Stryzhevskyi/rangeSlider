@@ -5,6 +5,10 @@
         "no-undef": 0,
         "operator-linebreak": 0,
         "space-before-function-paren": 0,
-        "indent": ["error", 2]
+        "indent": ["error", 2],
+    "prefer-regex-literals": 0,
+    "quote-props": 0,
+    "prefer-const": 0,
+    "dot-notation": 0
     }
 }

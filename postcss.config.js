@@ -1,12 +1,6 @@
-module.exports = {
-  parser: false,
+export default {
   plugins: {
-    'autoprefixer': {
-      browsers: [
-        'ie >= 9',
-        'last 3 versions'
-      ]
-    },
-    'cssnano': {}
-  }
+    autoprefixer: {},
+    cssnano: {},
+  },
 };

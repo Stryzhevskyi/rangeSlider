@@ -2,16 +2,32 @@
   "name": "rangeslider-pure",
   "title": "range-slider",
   "description": "Simple, small and fast vanilla JavaScript polyfill for the HTML5 <input type=\"range\"> slider element",
-  "version": "0.4.11",
+  "version": "0.5.0",
+  "type": "module",
   "main": "dist/range-slider.js",
+  "module": "dist/range-slider.esm.js",
+  "types": "dist/range-slider.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/range-slider.esm.js",
+      "require": "./dist/range-slider.js"
+    },
+    "./dist/range-slider.css": "./dist/range-slider.css"
+  },
+  "files": [
+    "dist",
+    "LICENSE.md",
+    "README.md"
+  ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --no-inline --watch-content-base",
-    "build": "cross-env NODE_ENV=production webpack --production && webpack",
-    "lint": "eslint src/range-slider.js"
+    "dev": "vite serve",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --fix src/*.js"
   },
   "homepage": "https://github.com/Stryzhevskyi/rangeSlider",
   "author": {
-    "name": "Serhei Stryzhevskyi",
+    "name": "Serhii Stryzhevskyi",
     "url": "https://github.com/Stryzhevskyi"
   },
   "repository": {
@@ -39,38 +55,16 @@
     "url": "https://github.com/Stryzhevskyi/rangeSlider/issues"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=18.0.0"
   },
+  "browserslist": [
+    "ie >= 9",
+    "last 3 versions"
+  ],
   "devDependencies": {
-    "autoprefixer": "7.1.4",
-    "babel-core": "6.26.0",
-    "babel-eslint": "8.0.0",
-    "babel-loader": "7.1.2",
-    "babel-plugin-add-module-exports": "0.2.1",
-    "babel-preset-env": "1.6.0",
-    "babel-preset-es2015": "6.24.1",
-    "cross-env": "5.0.5",
-    "css-loader": "0.28.7",
-    "cssnano": "3.10.0",
-    "eslint": "4.18.2",
-    "eslint-config-standard": "10.2.1",
-    "eslint-loader": "2.1.1",
-    "eslint-plugin-import": "2.7.0",
-    "eslint-plugin-node": "5.1.1",
-    "eslint-plugin-promise": "3.5.0",
-    "eslint-plugin-standard": "3.0.1",
-    "html-entities": "1.2.1",
-    "mini-css-extract-plugin": "0.5.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.1",
-    "postcss-loader": "2.0.6",
-    "pre-commit": "1.2.2",
-    "style-loader": "0.18.2",
-    "uglifyjs-webpack-plugin": "2.1.1",
-    "webpack": "4.29.0",
-    "webpack-cli": "3.2.1",
-    "webpack-dev-server": "3.1.14"
-  },
-  "pre-commit": [
-    "lint"
-  ]
+    "autoprefixer": "^10.4.27",
+    "cssnano": "^7.0.6",
+    "eslint": "^10.1.0",
+    "vite": "^8.0.1"
+  }
 }

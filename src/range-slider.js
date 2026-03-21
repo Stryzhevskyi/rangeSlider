@@ -2,7 +2,7 @@ import * as dom from './utils/dom';
 import * as func from './utils/functions';
 import './range-slider.css';
 
-const newLineAndTabRegexp = new RegExp('/[\\n\\t]/', 'g');
+const newLineAndTabRegexp = /[\n\t]/g;
 const MAX_SET_BY_DEFAULT = 100;
 const HANDLE_RESIZE_DELAY = 300;
 const HANDLE_RESIZE_DEBOUNCE = 50;
@@ -73,22 +73,22 @@ export default class RangeSlider {
 
     this.identifier = 'js-' + pluginName + '-' + func.uuid();
 
-    this.min = func.getFirsNumberLike(
+    this.min = func.getFirstNumberLike(
       this.options.min,
       parseFloat(this.element.getAttribute('min')),
       (minSetByDefault = 0)
     );
 
-    this.max = func.getFirsNumberLike(
+    this.max = func.getFirstNumberLike(
       this.options.max,
       parseFloat(this.element.getAttribute('max')),
       (maxSetByDefault = MAX_SET_BY_DEFAULT)
     );
 
-    this.value = func.getFirsNumberLike(this.options.value, this.element.value,
+    this.value = func.getFirstNumberLike(this.options.value, this.element.value,
       parseFloat(this.element.value || this.min + (this.max - this.min) / 2));
 
-    this.step = func.getFirsNumberLike(this.options.step,
+    this.step = func.getFirstNumberLike(this.options.step,
       parseFloat(this.element.getAttribute('step')) || (stepSetByDefault = 1));
 
     this.percent = null;
@@ -565,7 +565,7 @@ export default class RangeSlider {
    * @private
    */
   _getPositionFromNode(node) {
-    let i = this.vertical ? this.maxHandleX : 0;
+    let i = 0;
 
     while (node !== null) {
       i += this.vertical ? node.offsetTop : node.offsetLeft;

@@ -45,7 +45,7 @@ export const isArray = obj => Object.prototype.toString.call(obj) === '[object A
 export const isNumberLike = (obj) =>
   (obj !== null && obj !== undefined && ((isString(obj) && isFinite(parseFloat(obj))) || (isFinite(obj))));
 
-export const getFirsNumberLike = (...args) => {
+export const getFirstNumberLike = (...args) => {
   if (!args.length) {
     return null;
   }
