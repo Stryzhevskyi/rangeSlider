@@ -46,14 +46,14 @@ rangeSlider.create(slider, {
     onInit: function () {
         console.info('onInit')
     },
-    onSlideStart: function (position, value) {
-        console.info('onSlideStart', 'position: ' + position, 'value: ' + value);
+    onSlideStart: function (value, percent, position) {
+        console.info('onSlideStart', 'value: ' + value, 'percent: ' + percent, 'position: ' + position);
     },
-    onSlide: function (position, value) {
-        console.log('onSlide', 'position: ' + position, 'value: ' + value);
+    onSlide: function (value, percent, position) {
+        console.log('onSlide', 'value: ' + value, 'percent: ' + percent, 'position: ' + position);
     },
-    onSlideEnd: function (position, value) {
-        console.warn('onSlideEnd', 'position: ' + position, 'value: ' + value);
+    onSlideEnd: function (value, percent, position) {
+        console.warn('onSlideEnd', 'value: ' + value, 'percent: ' + percent, 'position: ' + position);
     }
 });
 
