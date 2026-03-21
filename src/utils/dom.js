@@ -239,7 +239,7 @@ export const removeEventListeners = (el, events, listener) => {
     el.removeEventListener(
       eventName,
       listener,
-      false
+      eventCaptureParams
     );
 
     if (el[EVENT_LISTENER_LIST] && el[EVENT_LISTENER_LIST][eventName] &&
