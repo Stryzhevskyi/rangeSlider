@@ -12,8 +12,12 @@ Check out the [examples](http://stryzhevskyi.github.io/rangeSlider/).
 * Buffer progressbar (for downloading progress etc.)
 
 ## Install
+
 Install with [npm](https://www.npmjs.com/package/rangeslider-pure):
-``npm install --save rangeslider-pure``
+
+```
+npm install --save rangeslider-pure
+```
 
 ## Usage
 
@@ -56,11 +60,11 @@ rangeSlider.create(slider, {
 // update position
 const triggerEvents = true; // or false
 slider.rangeSlider.update({
-    min : 0,
-    max : 20, 
-    step : 0.5,
-    value : 1.5,
-    buffer : 70
+    min: 0,
+    max: 20,
+    step: 0.5,
+    value: 1.5,
+    buffer: 70
 }, triggerEvents);
 
 ```
@@ -77,20 +81,20 @@ slider.rangeSlider.update({
 ### Internal APIs:
 ```js
 /*
-* @see src/utils/dom.js
+ * @see src/utils/dom.js
  */
 RangeSlider.dom;
 /*
-* @see src/utils/functions.js
+ * @see src/utils/functions.js
  */
 RangeSlider.functions;
 RangeSlider.version;
 
 ```
 
+Use the [JSFiddle](https://jsfiddle.net/Stryzhevskyi/rpsa16fn/) template for issues.
 
-Use [JSFiddle](https://jsfiddle.net/Stryzhevskyi/rpsa16fn/) template for issues
+Alternative template on [StackBlitz](https://stackblitz.com/edit/rangeslider-pure-example).
 
-Alternative template on [StackBlitz](https://stackblitz.com/edit/rangeslider-pure-example)
 ## License
 MIT

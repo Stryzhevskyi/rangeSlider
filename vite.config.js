@@ -19,6 +19,6 @@ export default defineConfig({
   },
   server: {
     port: 8000,
-    open: '/example/index.html',
+    open: '/example/index-esm.html',
   },
 })

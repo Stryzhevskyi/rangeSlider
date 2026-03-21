@@ -6,6 +6,19 @@
   "type": "module",
   "main": "dist/range-slider.js",
   "module": "dist/range-slider.esm.js",
+  "types": "dist/range-slider.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/range-slider.esm.js",
+      "require": "./dist/range-slider.js"
+    },
+    "./dist/range-slider.css": "./dist/range-slider.css"
+  },
+  "files": [
+    "dist",
+    "LICENSE.md",
+    "README.md"
+  ],
   "scripts": {
     "dev": "vite serve",
     "build": "vite build",
@@ -14,7 +27,7 @@
   },
   "homepage": "https://github.com/Stryzhevskyi/rangeSlider",
   "author": {
-    "name": "Serhei Stryzhevskyi",
+    "name": "Serhii Stryzhevskyi",
     "url": "https://github.com/Stryzhevskyi"
   },
   "repository": {
@@ -49,17 +62,9 @@
     "last 3 versions"
   ],
   "devDependencies": {
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.27",
     "cssnano": "^7.0.6",
-    "eslint": "^8.57.1",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-n": "^16.6.2",
-    "eslint-plugin-promise": "^6.6.0",
-    "pre-commit": "^1.2.2",
-    "vite": "^6.2.3"
-  },
-  "pre-commit": [
-    "lint"
-  ]
+    "eslint": "^10.1.0",
+    "vite": "^8.0.1"
+  }
 }
