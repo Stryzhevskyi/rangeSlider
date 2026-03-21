@@ -6,7 +6,8 @@
     <title>range-slider.js</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="range-slider.css">
+    <!-- range-slider.css is injected via JS module in dev; link dist/range-slider.css when using the built bundle -->
+    <!--<link rel="stylesheet" href="../dist/range-slider.css">-->
     <!--<link rel="stylesheet" href="range-slider-flat.css">-->
     <style>
         *,
@@ -215,8 +216,8 @@
     </details>
 </div>
 
-<script src="range-slider.js"></script>
-<script>
+<script type="module">
+  import rangeSlider from '/src/range-slider.js';
   (function () {
 
     var selector = '[data-rangeSlider]',
